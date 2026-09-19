@@ -1,0 +1,192 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-heading: var(--font-display);
+  --color-token-1: var(--token-1);
+  --color-token-2: var(--token-2);
+  --color-token-3: var(--token-3);
+  --color-token-4: var(--token-4);
+  --color-token-5: var(--token-5);
+  --color-token-6: var(--token-6);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* "The Track" — a kraft/board-stock table color as the page ground (not
+     the pale "AI cream" — Impeccable's detector correctly flagged an
+     earlier, too-safe version of this at rgb(247,243,236) as landing in
+     that exact cluster; committed to a visibly tan, more saturated table
+     tone instead), paper-white cards sitting on top of it, a crimson marker
+     accent used functionally, and a six-hue player-token palette reserved
+     for player identity (never general UI decoration). */
+  --background: oklch(0.91 0.032 82);
+  --foreground: oklch(0.22 0.025 50);
+  --card: oklch(0.97 0.012 78);
+  --card-foreground: oklch(0.22 0.025 50);
+  --popover: oklch(0.98 0.008 78);
+  --popover-foreground: oklch(0.22 0.025 50);
+  --primary: oklch(0.46 0.17 18);
+  --primary-foreground: oklch(0.98 0.008 75);
+  --secondary: oklch(0.86 0.028 75);
+  --secondary-foreground: oklch(0.26 0.03 45);
+  --muted: oklch(0.88 0.022 78);
+  --muted-foreground: oklch(0.46 0.028 55);
+  --accent: oklch(0.83 0.035 75);
+  --accent-foreground: oklch(0.26 0.03 45);
+  --destructive: oklch(0.56 0.2 35);
+  --border: oklch(0.78 0.03 75);
+  --input: oklch(0.78 0.03 75);
+  --ring: oklch(0.46 0.17 18 / 50%);
+  --chart-1: var(--token-1);
+  --chart-2: var(--token-2);
+  --chart-3: var(--token-3);
+  --chart-4: var(--token-4);
+  --chart-5: var(--token-5);
+  --token-1: oklch(0.55 0.15 255);
+  --token-2: oklch(0.78 0.15 85);
+  --token-3: oklch(0.55 0.13 145);
+  --token-4: oklch(0.5 0.16 305);
+  --token-5: oklch(0.56 0.12 195);
+  --token-6: oklch(0.63 0.16 55);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.88 0.022 78);
+  --sidebar-foreground: oklch(0.22 0.025 50);
+  --sidebar-primary: oklch(0.46 0.17 18);
+  --sidebar-primary-foreground: oklch(0.98 0.008 75);
+  --sidebar-accent: oklch(0.83 0.035 75);
+  --sidebar-accent-foreground: oklch(0.26 0.03 45);
+  --sidebar-border: oklch(0.78 0.03 75);
+  --sidebar-ring: oklch(0.46 0.17 18 / 50%);
+}
+
+.dark {
+  --background: oklch(0.2 0.016 50);
+  --foreground: oklch(0.93 0.012 70);
+  --card: oklch(0.25 0.018 50);
+  --card-foreground: oklch(0.93 0.012 70);
+  --popover: oklch(0.25 0.018 50);
+  --popover-foreground: oklch(0.93 0.012 70);
+  --primary: oklch(0.63 0.18 18);
+  --primary-foreground: oklch(0.98 0.008 75);
+  --secondary: oklch(0.3 0.02 50);
+  --secondary-foreground: oklch(0.9 0.012 70);
+  --muted: oklch(0.28 0.018 50);
+  --muted-foreground: oklch(0.68 0.02 62);
+  --accent: oklch(0.32 0.024 50);
+  --accent-foreground: oklch(0.93 0.012 70);
+  --destructive: oklch(0.65 0.2 35);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.63 0.18 18 / 55%);
+  --chart-1: var(--token-1);
+  --chart-2: var(--token-2);
+  --chart-3: var(--token-3);
+  --chart-4: var(--token-4);
+  --chart-5: var(--token-5);
+  --token-1: oklch(0.62 0.15 255);
+  --token-2: oklch(0.8 0.15 85);
+  --token-3: oklch(0.62 0.14 145);
+  --token-4: oklch(0.58 0.17 305);
+  --token-5: oklch(0.63 0.13 195);
+  --token-6: oklch(0.68 0.17 55);
+  --sidebar: oklch(0.23 0.018 50);
+  --sidebar-foreground: oklch(0.93 0.012 70);
+  --sidebar-primary: oklch(0.63 0.18 18);
+  --sidebar-primary-foreground: oklch(0.98 0.008 75);
+  --sidebar-accent: oklch(0.32 0.024 50);
+  --sidebar-accent-foreground: oklch(0.93 0.012 70);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.63 0.18 18 / 55%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/*
+ * The signature motion: a track entry (a play, a standing, a token)
+ * advancing into position, not a generic fade-in. Reused everywhere the
+ * track composition appears — one authored moment, not scattered effects.
+ * Capped stagger so a long list doesn't leave later rows waiting a full
+ * second to appear.
+ */
+@keyframes track-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.track-enter {
+  animation: track-enter 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(min(var(--track-i, 0), 8) * 60ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track-enter {
+    animation: none;
+  }
+}

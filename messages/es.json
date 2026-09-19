@@ -1,0 +1,328 @@
+{
+  "metadata": {
+    "title": "Boardhive",
+    "description": "Registra vuestras partidas de juegos de mesa con vuestro grupo de amigos — anota partidas, lleva la puntuación y mira quién va ganando."
+  },
+  "common": {
+    "appName": "Boardhive",
+    "loading": "Cargando…",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "confirm": "Confirmar",
+    "somethingWentWrong": "Algo salió mal",
+    "tryAgain": "Inténtalo de nuevo",
+    "retry": "Reintentar",
+    "language": "Idioma"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio.",
+    "displayNameMin": "Debe tener al menos 2 caracteres.",
+    "displayNameMax": "Máximo 60 caracteres.",
+    "invalidEmail": "Introduce una dirección de correo válida.",
+    "passwordMin": "Al menos 8 caracteres.",
+    "passwordLetter": "Incluye al menos una letra.",
+    "passwordNumber": "Incluye al menos un número.",
+    "passwordRequired": "La contraseña es obligatoria."
+  },
+  "auth": {
+    "login": {
+      "title": "Bienvenido de nuevo",
+      "subtitle": "Accede a tus hives.",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión…",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "noAccount": "¿Nuevo en Boardhive?",
+      "signUpLink": "Crear una cuenta",
+      "invalidCredentials": "Ese correo o contraseña no son correctos.",
+      "invalidLink": "Ese enlace no funcionó — puede haber caducado o ya haberse usado. Solicita uno nuevo abajo."
+    },
+    "signup": {
+      "title": "Crea tu cuenta",
+      "subtitle": "Empieza a registrar partidas con tus amigos.",
+      "displayName": "Tu nombre",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Crear cuenta",
+      "submitting": "Creando cuenta…",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "loginLink": "Iniciar sesión",
+      "checkEmail": "Revisa tu correo para confirmar la cuenta y luego inicia sesión.",
+      "emailTaken": "Ya existe una cuenta con ese correo."
+    },
+    "forgotPassword": {
+      "title": "Restablece tu contraseña",
+      "subtitle": "Te enviaremos un enlace para crear una nueva.",
+      "email": "Correo electrónico",
+      "submit": "Enviar enlace",
+      "submitting": "Enviando…",
+      "checkEmail": "Si existe una cuenta con ese correo, el enlace está en camino.",
+      "backToLogin": "Volver a iniciar sesión"
+    },
+    "resetPassword": {
+      "title": "Establece una nueva contraseña",
+      "subtitle": "Elige una nueva contraseña para tu cuenta.",
+      "password": "Nueva contraseña",
+      "submit": "Actualizar contraseña",
+      "submitting": "Actualizando…",
+      "success": "Contraseña actualizada. Has iniciado sesión."
+    },
+    "confirm": {
+      "title": "Confirma que eres tú",
+      "body": "Toca continuar para terminar. Pedimos un toque más aquí para que un escáner de seguridad de correo no gaste tu enlace antes de que puedas hacer clic en él.",
+      "continue": "Continuar"
+    },
+    "logout": "Cerrar sesión"
+  },
+  "invite": {
+    "title": "Estás invitado",
+    "body": "Únete a este hive para empezar a anotar partidas con el grupo.",
+    "join": "Unirse al hive",
+    "joining": "Uniéndose…",
+    "loginPrompt": "Inicia sesión o crea una cuenta para unirte.",
+    "loginCta": "Iniciar sesión",
+    "signupCta": "Crear una cuenta",
+    "invalidCode": "Ese código de invitación no es válido o ha caducado."
+  },
+  "hives": {
+    "title": "Tus hives",
+    "empty": {
+      "title": "Aún no tienes hives",
+      "body": "Crea un hive para tu grupo de amigos, o únete a uno con un código de invitación."
+    },
+    "create": {
+      "title": "Crear un hive",
+      "name": "Nombre del hive",
+      "namePlaceholder": "Peña de los Viernes",
+      "submit": "Crear hive",
+      "submitting": "Creando…",
+      "cta": "Crear un hive"
+    },
+    "join": {
+      "title": "Unirse a un hive",
+      "code": "Código de invitación",
+      "submit": "Unirse",
+      "submitting": "Uniéndose…",
+      "cta": "Unirse con un código",
+      "invalidCode": "Ese código de invitación no es válido o ha caducado."
+    },
+    "membersCount": "{count, plural, one {# miembro} other {# miembros}}",
+    "home": {
+      "logPlay": "Anotar partida",
+      "recentPlays": "Partidas recientes",
+      "noPlays": "Aún no hay partidas registradas. ¡Sé el primero!",
+      "viewAll": "Ver todas las partidas",
+      "stats": "Estadísticas",
+      "members": "Miembros",
+      "library": "Colección",
+      "settings": "Ajustes"
+    }
+  },
+  "plays": {
+    "playerCount": "{count, plural, one {# jugador} other {# jugadores}}",
+    "won": "Ganó {name}",
+    "unknownGame": "Juego desconocido",
+    "list": {
+      "title": "Todas las partidas",
+      "empty": "Aún no hay partidas registradas."
+    },
+    "new": {
+      "title": "Anotar partida",
+      "gameLabel": "Juego",
+      "gameSearchPlaceholder": "Busca un juego…",
+      "changeGame": "Cambiar",
+      "fromLibrary": "De la colección del hive",
+      "searchResults": "Resultados",
+      "noResults": "No se encontraron juegos.",
+      "participantsLabel": "¿Quién jugó?",
+      "addGuest": "Añadir invitado",
+      "guestNamePlaceholder": "Nombre del invitado",
+      "removeParticipant": "Quitar",
+      "winner": "Ganador",
+      "score": "Puntuación",
+      "placement": "Posición",
+      "position": "Pos.",
+      "factionPlaceholder": "Elige una facción",
+      "newFaction": "+ Añadir nueva facción",
+      "newFactionPlaceholder": "Nombre de la facción",
+      "dateLabel": "Fecha",
+      "notesLabel": "Notas (opcional)",
+      "submit": "Anotar partida",
+      "submitting": "Anotando…",
+      "selectGamePrompt": "Busca o elige un juego para continuar",
+      "atLeastOneParticipant": "Añade al menos un participante",
+      "mode": {
+        "label": "¿Qué tipo de juego es?",
+        "generic": "Estándar",
+        "racing": "Carreras",
+        "asymmetric": "Asimétrico"
+      },
+      "photos": {
+        "label": "Fotos (opcional)",
+        "addPhotos": "Añadir fotos",
+        "remove": "Eliminar foto",
+        "someSkipped": "Se omitieron algunas fotos — solo imágenes, máximo 5 MB, hasta 6 fotos."
+      }
+    },
+    "detail": {
+      "editSheetTitle": "Editar partida",
+      "comments": "Comentarios",
+      "addComment": "Añadir un comentario",
+      "commentPlaceholder": "¿Qué te pareció?",
+      "postComment": "Publicar",
+      "posting": "Publicando…",
+      "yourComment": "Tu comentario",
+      "editComment": "Editar tu comentario",
+      "editPlay": "Editar",
+      "deletePlay": "Eliminar partida",
+      "confirmDelete": "¿Eliminar esta partida? No se puede deshacer.",
+      "participants": "Jugadores",
+      "notes": "Notas",
+      "faction": "Facción",
+      "photos": {
+        "title": "Fotos",
+        "addPhoto": "Añadir fotos",
+        "uploading": "Subiendo…",
+        "delete": "Eliminar foto",
+        "errors": {
+          "invalidType": "Ese archivo no es una imagen.",
+          "tooLarge": "Que cada foto pese menos de 5 MB.",
+          "generic": "No se pudo subir esa foto. Inténtalo de nuevo."
+        }
+      }
+    }
+  },
+  "stats": {
+    "title": "Estadísticas",
+    "totalPlays": "{count, plural, one {# partida registrada} other {# partidas registradas}}",
+    "standings": "Clasificación",
+    "mostPlayed": "Más jugados",
+    "wins": "{count, plural, one {# victoria} other {# victorias}}",
+    "empty": "Anota algunas partidas para ver estadísticas aquí.",
+    "pickHive": "Elige un hive"
+  },
+  "gameStats": {
+    "viewGameInfo": "Ver ficha del juego",
+    "totalPlays": "{count, plural, one {# partida en este hive} other {# partidas en este hive}}",
+    "empty": "Aún no hay partidas de este juego registradas en este hive.",
+    "standings": "Clasificación",
+    "racingStandings": "Clasificación de carreras",
+    "factionStandings": "Tasa de victorias por facción",
+    "podiums": "{count, plural, one {# podio} other {# podios}}",
+    "plays": "{count, plural, one {# partida} other {# partidas}}",
+    "recentPlays": "Últimas partidas"
+  },
+  "library": {
+    "title": "Tu colección",
+    "empty": "Aún no has añadido ningún juego.",
+    "addGame": "Añadir un juego",
+    "playCount": "{count, plural, one {# partida} other {# partidas}}",
+    "groupTitle": "Colección de {name}",
+    "groupEmpty": "Nadie en este hive ha añadido juegos todavía.",
+    "ownedBy": "{count, plural, one {# propietario} other {# propietarios}}",
+    "remove": "Quitar"
+  },
+  "members": {
+    "title": "Miembros",
+    "inviteTitle": "Invitar gente",
+    "inviteBody": "Comparte este código con amigos para que puedan unirse.",
+    "inviteCode": "Código de invitación",
+    "generateCode": "Generar nuevo código",
+    "copyCode": "Copiar",
+    "copied": "¡Copiado!",
+    "owner": "Propietario",
+    "member": "Miembro"
+  },
+  "settings": {
+    "title": "Ajustes del hive",
+    "nameLabel": "Nombre del hive",
+    "save": "Guardar cambios",
+    "saved": "Guardado",
+    "dangerZone": "Zona de peligro",
+    "leaveHive": "Abandonar hive",
+    "deleteHive": "Eliminar hive",
+    "confirmLeave": "¿Abandonar este hive? Necesitarás una nueva invitación para volver a unirte.",
+    "confirmDelete": "¿Eliminar este hive permanentemente? Esto elimina todas las partidas, fotos y comentarios para todos. No se puede deshacer."
+  },
+  "profile": {
+    "title": "Perfil",
+    "displayName": "Nombre",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "myLibrary": "Mi colección",
+    "language": "Idioma",
+    "logout": "Cerrar sesión",
+    "avatar": {
+      "changePhoto": "Cambiar foto",
+      "errors": {
+        "noFile": "Elige una imagen para subir.",
+        "invalidType": "Ese archivo no es una imagen.",
+        "tooLarge": "Que pese menos de 5 MB.",
+        "generic": "No se pudo actualizar tu foto. Inténtalo de nuevo."
+      }
+    },
+    "stats": {
+      "hives": "{count, plural, one {# hive} other {# hives}}",
+      "plays": "{count, plural, one {# partida} other {# partidas}}",
+      "wins": "{count, plural, one {# victoria} other {# victorias}}",
+      "winRate": "Tasa de victorias"
+    }
+  },
+  "games": {
+    "players": "{min}–{max} jugadores",
+    "playtime": "{min}–{max} min",
+    "categories": "Categorías",
+    "mechanics": "Mecánicas",
+    "notFound": "Juego no encontrado"
+  },
+  "nav": {
+    "hives": "Hives",
+    "logPlay": "Anotar partida",
+    "stats": "Estadísticas",
+    "profile": "Perfil",
+    "library": "Colección"
+  },
+  "landing": {
+    "hero": {
+      "title": "El marcador de vuestras noches de juego",
+      "subtitle": "Anota partidas, lleva la puntuación y mira quién va ganando — con los amigos que estuvieron ahí de verdad.",
+      "cta": "Crea tu hive",
+      "loginCta": "Ya tengo una cuenta"
+    },
+    "demo": {
+      "hiveName": "Hive de los Viernes",
+      "play1": "Brass: Birmingham — ganó Maria",
+      "play2": "Wingspan — 4 jugadores",
+      "play3": "Ark Nova — nuevo récord personal"
+    },
+    "steps": {
+      "title": "Cómo funciona",
+      "step1Title": "Crea un hive",
+      "step1Body": "Crea un grupo privado para tus amigos, o únete a uno con un código de invitación.",
+      "step2Title": "Anota una partida",
+      "step2Body": "Busca el juego — se autocompleta desde un catálogo de más de 140.000 títulos — añade quién jugó y cómo fue.",
+      "step3Title": "Mira el marcador",
+      "step3Body": "Consulta el historial de tu grupo, la clasificación y quién va ganando, siempre limitado a tu hive."
+    },
+    "footerCta": {
+      "title": "Vuestra próxima noche de juego merece un marcador",
+      "cta": "Crea tu hive"
+    }
+  },
+  "notFound": {
+    "title": "No encontrado",
+    "description": "Esta página no existe, o no tienes acceso a ella.",
+    "cta": "Volver a Boardhive"
+  },
+  "error": {
+    "title": "Algo se rompió",
+    "description": "Ha ocurrido un error inesperado. Ya ha quedado registrado — inténtalo de nuevo.",
+    "cta": "Inténtalo de nuevo"
+  }
+}

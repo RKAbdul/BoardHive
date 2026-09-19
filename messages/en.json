@@ -1,0 +1,328 @@
+{
+  "metadata": {
+    "title": "Boardhive",
+    "description": "Track board game play sessions with your friend group — log plays, keep score, and see who's winning."
+  },
+  "common": {
+    "appName": "Boardhive",
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "confirm": "Confirm",
+    "somethingWentWrong": "Something went wrong",
+    "tryAgain": "Try again",
+    "retry": "Retry",
+    "language": "Language"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "displayNameMin": "Must be at least 2 characters.",
+    "displayNameMax": "Keep it under 60 characters.",
+    "invalidEmail": "Enter a valid email address.",
+    "passwordMin": "At least 8 characters.",
+    "passwordLetter": "Include at least one letter.",
+    "passwordNumber": "Include at least one number.",
+    "passwordRequired": "Password is required."
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to your hives.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in…",
+      "forgotPassword": "Forgot your password?",
+      "noAccount": "New to Boardhive?",
+      "signUpLink": "Create an account",
+      "invalidCredentials": "That email or password isn't right.",
+      "invalidLink": "That link didn't work — it may have expired or already been used. Request a new one below."
+    },
+    "signup": {
+      "title": "Create your account",
+      "subtitle": "Start tracking plays with your friends.",
+      "displayName": "Your name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "checkEmail": "Check your email to confirm your account, then log in.",
+      "emailTaken": "An account with that email already exists."
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "subtitle": "We'll email you a link to set a new one.",
+      "email": "Email",
+      "submit": "Send reset link",
+      "submitting": "Sending…",
+      "checkEmail": "If an account exists for that email, a reset link is on its way.",
+      "backToLogin": "Back to login"
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "subtitle": "Choose a new password for your account.",
+      "password": "New password",
+      "submit": "Update password",
+      "submitting": "Updating…",
+      "success": "Password updated. You're logged in."
+    },
+    "confirm": {
+      "title": "Confirm it's you",
+      "body": "Tap continue to finish this. We ask for one more tap here so an email security scanner can't use up your link before you get to click it.",
+      "continue": "Continue"
+    },
+    "logout": "Log out"
+  },
+  "invite": {
+    "title": "You're invited",
+    "body": "Join this hive to start logging plays with the group.",
+    "join": "Join hive",
+    "joining": "Joining…",
+    "loginPrompt": "Log in or create an account to join.",
+    "loginCta": "Log in",
+    "signupCta": "Create an account",
+    "invalidCode": "That invite code is invalid or has expired."
+  },
+  "hives": {
+    "title": "Your hives",
+    "empty": {
+      "title": "No hives yet",
+      "body": "Create a hive for your friend group, or join one with an invite code."
+    },
+    "create": {
+      "title": "Create a hive",
+      "name": "Hive name",
+      "namePlaceholder": "Friday Night Crew",
+      "submit": "Create hive",
+      "submitting": "Creating…",
+      "cta": "Create a hive"
+    },
+    "join": {
+      "title": "Join a hive",
+      "code": "Invite code",
+      "submit": "Join",
+      "submitting": "Joining…",
+      "cta": "Join with a code",
+      "invalidCode": "That invite code is invalid or has expired."
+    },
+    "membersCount": "{count, plural, one {# member} other {# members}}",
+    "home": {
+      "logPlay": "Log a play",
+      "recentPlays": "Recent plays",
+      "noPlays": "No plays logged yet. Be the first!",
+      "viewAll": "View all plays",
+      "stats": "Stats",
+      "members": "Members",
+      "library": "Library",
+      "settings": "Settings"
+    }
+  },
+  "plays": {
+    "playerCount": "{count, plural, one {# player} other {# players}}",
+    "won": "{name} won",
+    "unknownGame": "Unknown game",
+    "list": {
+      "title": "All plays",
+      "empty": "No plays logged yet."
+    },
+    "new": {
+      "title": "Log a play",
+      "gameLabel": "Game",
+      "gameSearchPlaceholder": "Search a game…",
+      "changeGame": "Change",
+      "fromLibrary": "From your hive's library",
+      "searchResults": "Search results",
+      "noResults": "No games found.",
+      "participantsLabel": "Who played?",
+      "addGuest": "Add a guest",
+      "guestNamePlaceholder": "Guest name",
+      "removeParticipant": "Remove",
+      "winner": "Winner",
+      "score": "Score",
+      "placement": "Placement",
+      "position": "Pos.",
+      "factionPlaceholder": "Pick a faction",
+      "newFaction": "+ Add new faction",
+      "newFactionPlaceholder": "Faction name",
+      "dateLabel": "Date",
+      "notesLabel": "Notes (optional)",
+      "submit": "Log play",
+      "submitting": "Logging…",
+      "selectGamePrompt": "Search or pick a game to continue",
+      "atLeastOneParticipant": "Add at least one participant",
+      "mode": {
+        "label": "What kind of game is this?",
+        "generic": "Standard",
+        "racing": "Racing",
+        "asymmetric": "Asymmetric"
+      },
+      "photos": {
+        "label": "Photos (optional)",
+        "addPhotos": "Add photos",
+        "remove": "Remove photo",
+        "someSkipped": "Some photos were skipped — images only, 5 MB max, up to 6 photos."
+      }
+    },
+    "detail": {
+      "editSheetTitle": "Edit play",
+      "comments": "Comments",
+      "addComment": "Add a comment",
+      "commentPlaceholder": "What did you think?",
+      "postComment": "Post",
+      "posting": "Posting…",
+      "yourComment": "Your comment",
+      "editComment": "Edit your comment",
+      "editPlay": "Edit",
+      "deletePlay": "Delete play",
+      "confirmDelete": "Delete this play? This can't be undone.",
+      "participants": "Players",
+      "notes": "Notes",
+      "faction": "Faction",
+      "photos": {
+        "title": "Photos",
+        "addPhoto": "Add photos",
+        "uploading": "Uploading…",
+        "delete": "Delete photo",
+        "errors": {
+          "invalidType": "That file isn't an image.",
+          "tooLarge": "Keep each photo under 5 MB.",
+          "generic": "Couldn't upload that photo. Try again."
+        }
+      }
+    }
+  },
+  "stats": {
+    "title": "Stats",
+    "totalPlays": "{count, plural, one {# play logged} other {# plays logged}}",
+    "standings": "Standings",
+    "mostPlayed": "Most played",
+    "wins": "{count, plural, one {# win} other {# wins}}",
+    "empty": "Log a few plays to see stats here.",
+    "pickHive": "Pick a hive"
+  },
+  "gameStats": {
+    "viewGameInfo": "View game info",
+    "totalPlays": "{count, plural, one {# play in this hive} other {# plays in this hive}}",
+    "empty": "No plays of this game logged in this hive yet.",
+    "standings": "Standings",
+    "racingStandings": "Racing standings",
+    "factionStandings": "Faction win rates",
+    "podiums": "{count, plural, one {# podium} other {# podiums}}",
+    "plays": "{count, plural, one {# play} other {# plays}}",
+    "recentPlays": "Recent plays"
+  },
+  "library": {
+    "title": "Your library",
+    "empty": "You haven't added any games yet.",
+    "addGame": "Add a game",
+    "playCount": "{count, plural, one {# play} other {# plays}}",
+    "groupTitle": "{name}'s library",
+    "groupEmpty": "No one in this hive has added games yet.",
+    "ownedBy": "{count, plural, one {# owner} other {# owners}}",
+    "remove": "Remove"
+  },
+  "members": {
+    "title": "Members",
+    "inviteTitle": "Invite people",
+    "inviteBody": "Share this code with friends to let them join.",
+    "inviteCode": "Invite code",
+    "generateCode": "Generate a new code",
+    "copyCode": "Copy",
+    "copied": "Copied!",
+    "owner": "Owner",
+    "member": "Member"
+  },
+  "settings": {
+    "title": "Hive settings",
+    "nameLabel": "Hive name",
+    "save": "Save changes",
+    "saved": "Saved",
+    "dangerZone": "Danger zone",
+    "leaveHive": "Leave hive",
+    "deleteHive": "Delete hive",
+    "confirmLeave": "Leave this hive? You'll need a new invite to rejoin.",
+    "confirmDelete": "Delete this hive permanently? This removes all plays, photos, and comments for everyone. This can't be undone."
+  },
+  "profile": {
+    "title": "Profile",
+    "displayName": "Name",
+    "save": "Save",
+    "saved": "Saved",
+    "myLibrary": "My library",
+    "language": "Language",
+    "logout": "Log out",
+    "avatar": {
+      "changePhoto": "Change photo",
+      "errors": {
+        "noFile": "Pick an image to upload.",
+        "invalidType": "That file isn't an image.",
+        "tooLarge": "Keep it under 5 MB.",
+        "generic": "Couldn't update your photo. Try again."
+      }
+    },
+    "stats": {
+      "hives": "{count, plural, one {# hive} other {# hives}}",
+      "plays": "{count, plural, one {# play} other {# plays}}",
+      "wins": "{count, plural, one {# win} other {# wins}}",
+      "winRate": "Win rate"
+    }
+  },
+  "games": {
+    "players": "{min}–{max} players",
+    "playtime": "{min}–{max} min",
+    "categories": "Categories",
+    "mechanics": "Mechanics",
+    "notFound": "Game not found"
+  },
+  "nav": {
+    "hives": "Hives",
+    "logPlay": "Log a play",
+    "stats": "Stats",
+    "profile": "Profile",
+    "library": "Library"
+  },
+  "landing": {
+    "hero": {
+      "title": "The scoring track for your game nights",
+      "subtitle": "Log plays, keep score, and see who's winning — with the friends who were actually there.",
+      "cta": "Create your hive",
+      "loginCta": "I already have an account"
+    },
+    "demo": {
+      "hiveName": "Friday Night Hive",
+      "play1": "Brass: Birmingham — Maria won",
+      "play2": "Wingspan — 4 players",
+      "play3": "Ark Nova — new personal best"
+    },
+    "steps": {
+      "title": "How it works",
+      "step1Title": "Start a hive",
+      "step1Body": "Create a private group for your friends, or join one with an invite code.",
+      "step2Title": "Log a play",
+      "step2Body": "Search the game — it autofills from a catalog of 140,000+ titles — add who played, and how it went.",
+      "step3Title": "Watch the track",
+      "step3Body": "See your group's history, standings, and who's winning, always scoped to your hive alone."
+    },
+    "footerCta": {
+      "title": "Your next game night deserves a track",
+      "cta": "Create your hive"
+    }
+  },
+  "notFound": {
+    "title": "Not found",
+    "description": "This page doesn't exist, or you don't have access to it.",
+    "cta": "Back to Boardhive"
+  },
+  "error": {
+    "title": "Something broke",
+    "description": "An unexpected error happened. It's been noted — try again.",
+    "cta": "Try again"
+  }
+}
