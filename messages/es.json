@@ -307,7 +307,6 @@
     "avatar": {
       "changePhoto": "Cambiar foto",
       "errors": {
-        "noFile": "Elige una imagen para subir.",
         "invalidType": "Ese archivo no es una imagen.",
         "tooLarge": "Que pese menos de 5 MB.",
         "generic": "No se pudo actualizar tu foto. Inténtalo de nuevo."

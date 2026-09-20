@@ -2,7 +2,8 @@
 
 import { useRef, useState, useTransition, type ChangeEvent } from "react"
 import { useTranslations } from "next-intl"
-import { uploadPlayPhoto } from "@/features/plays/actions"
+import { confirmPhotoUpload } from "@/features/plays/actions"
+import { createClient } from "@/lib/supabase/client"
 import { MAX_PHOTO_BYTES, type PhotoErrorCode } from "@/features/plays/schemas"
 import { Camera } from "lucide-react"
 
@@ -30,6 +31,11 @@ export function PhotoUploader({ groupId, playId }: { groupId: string; playId: st
 
     setError(null)
     startTransition(async () => {
+      // Uploaded straight to Supabase Storage from here, not through a
+      // server action — Vercel's serverless functions cap request bodies
+      // at 4.5MB, well under what a real photo can be. confirmPhotoUpload
+      // only records the resulting path once the bytes are already there.
+      const supabase = createClient()
       for (const file of files) {
         if (!file.type.startsWith("image/")) {
           setError("invalidType")
@@ -39,9 +45,17 @@ export function PhotoUploader({ groupId, playId }: { groupId: string; playId: st
           setError("tooLarge")
           continue
         }
-        const formData = new FormData()
-        formData.set("photo", file)
-        const result = await uploadPlayPhoto(groupId, playId, formData)
+
+        const path = `${groupId}/${playId}/${crypto.randomUUID()}`
+        const { error: uploadError } = await supabase.storage
+          .from("play-photos")
+          .upload(path, file, { contentType: file.type })
+        if (uploadError) {
+          setError("generic")
+          continue
+        }
+
+        const result = await confirmPhotoUpload(groupId, playId, path)
         if (result.error) setError(result.error)
       }
     })

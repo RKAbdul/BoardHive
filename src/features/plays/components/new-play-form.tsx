@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useEffect, useMemo, useState } from "react"
+import { useEffect, useState, useTransition, type FormEvent } from "react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
@@ -11,8 +11,10 @@ import { GamePicker } from "@/features/plays/components/game-picker"
 import { ModeSelector } from "@/features/plays/components/mode-selector"
 import { ParticipantRow, type Participant } from "@/features/plays/components/participant-row"
 import { PhotoPicker } from "@/features/plays/components/photo-picker"
-import { createPlay, getFactionsForGameAction } from "@/features/plays/actions"
-import type { ActionState, PlayMode } from "@/features/plays/schemas"
+import { createPlay, confirmPhotoUpload, getFactionsForGameAction } from "@/features/plays/actions"
+import { createClient } from "@/lib/supabase/client"
+import { useRouter } from "@/i18n/navigation"
+import type { PlayMode } from "@/features/plays/schemas"
 import { Dices } from "lucide-react"
 
 type Game = { bgg_id: number; name: string; image_url: string | null }
@@ -28,14 +30,9 @@ export function NewPlayForm({
   libraryGames: Game[]
 }) {
   const t = useTranslations("plays.new")
-  const boundCreatePlay = useMemo(
-    () => createPlay.bind(null, groupId),
-    [groupId]
-  )
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
-    boundCreatePlay,
-    null
-  )
+  const router = useRouter()
+  const [pending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
 
   const [game, setGame] = useState<Game | null>(null)
   const [mode, setMode] = useState<PlayMode>("generic")
@@ -43,6 +40,7 @@ export function NewPlayForm({
   const [guestDraft, setGuestDraft] = useState("")
   const [playedAt, setPlayedAt] = useState(() => new Date().toISOString().slice(0, 10))
   const [notes, setNotes] = useState("")
+  const [photos, setPhotos] = useState<File[]>([])
   const [factions, setFactions] = useState<{ id: string; name: string }[]>([])
 
   useEffect(() => {
@@ -109,28 +107,62 @@ export function NewPlayForm({
 
   const canSubmit = !!game && participants.length > 0 && !pending
 
-  const payload = game
-    ? JSON.stringify({
-        gameId: game.bgg_id,
-        mode,
-        playedAt,
-        notes: notes.trim() || null,
-        participants: participants.map((p) => ({
-          userId: p.userId,
-          guestName: p.guestName,
-          isWinner: p.isWinner,
-          score: p.score.trim() === "" ? null : Number(p.score),
-          placement: p.placement.trim() === "" ? null : Number(p.placement),
-          factionId: p.factionId,
-          newFactionName: p.newFactionName?.trim() || null,
-        })),
-      })
-    : ""
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault()
+    if (!game) return
+
+    const payload = {
+      gameId: game.bgg_id,
+      mode,
+      playedAt,
+      notes: notes.trim() || null,
+      participants: participants.map((p) => ({
+        userId: p.userId,
+        guestName: p.guestName,
+        isWinner: p.isWinner,
+        score: p.score.trim() === "" ? null : Number(p.score),
+        placement: p.placement.trim() === "" ? null : Number(p.placement),
+        factionId: p.factionId,
+        newFactionName: p.newFactionName?.trim() || null,
+      })),
+    }
+
+    setError(null)
+    startTransition(async () => {
+      const formData = new FormData()
+      formData.set("payload", JSON.stringify(payload))
+      const result = await createPlay(groupId, null, formData)
+
+      if (result?.error) {
+        setError(result.error)
+        return
+      }
+      if (!result?.playId || !result.groupId) return
+
+      // Staged photos go straight from the browser to storage — a server
+      // action's request body can't carry them (see createPlay) — so this
+      // uploads them here, after the play already exists, before
+      // navigating. Best-effort: the data that actually matters (the play
+      // itself) is already saved either way.
+      if (photos.length > 0) {
+        const supabase = createClient()
+        for (const file of photos) {
+          const path = `${result.groupId}/${result.playId}/${crypto.randomUUID()}`
+          const { error: uploadError } = await supabase.storage
+            .from("play-photos")
+            .upload(path, file, { contentType: file.type })
+          if (!uploadError) {
+            await confirmPhotoUpload(result.groupId, result.playId, path)
+          }
+        }
+      }
+
+      router.push(`/hives/${result.groupId}/plays/${result.playId}`)
+    })
+  }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6">
-      <input type="hidden" name="payload" value={payload} readOnly />
-
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       <div>
         <Label className="mb-2">{t("gameLabel")}</Label>
         {game ? (
@@ -234,12 +266,12 @@ export function NewPlayForm({
 
       <div>
         <Label className="mb-2">{t("photos.label")}</Label>
-        <PhotoPicker />
+        <PhotoPicker onFilesChange={setPhotos} />
       </div>
 
-      {state?.error && (
+      {error && (
         <p role="alert" className="text-sm text-destructive">
-          {state.error}
+          {error}
         </p>
       )}
 

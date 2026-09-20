@@ -8,13 +8,12 @@ import { Camera, X } from "lucide-react"
 type StagedFile = { file: File; preview: string }
 
 /**
- * Stages photo files for the new-play form. Files live on the real
- * `<input type="file" name="photos" multiple>` so the form's native
- * FormData submission (via useActionState) picks them up automatically —
- * removing one re-syncs the input's own `.files` via a DataTransfer so
- * what's staged in the UI always matches what actually submits.
+ * Stages photo files for the new-play form. The parent uploads them
+ * client-side (straight to Supabase Storage) once the play itself has been
+ * created, so this only needs to keep the parent's File[] in sync — no
+ * native form submission involved.
  */
-export function PhotoPicker() {
+export function PhotoPicker({ onFilesChange }: { onFilesChange: (files: File[]) => void }) {
   const t = useTranslations("plays.new.photos")
   const inputRef = useRef<HTMLInputElement>(null)
   const [staged, setStaged] = useState<StagedFile[]>([])
@@ -27,14 +26,9 @@ export function PhotoPicker() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- cleanup only, not resynced on every staged change
   }, [])
 
-  function syncInputFiles(files: File[]) {
-    const dt = new DataTransfer()
-    files.forEach((f) => dt.items.add(f))
-    if (inputRef.current) inputRef.current.files = dt.files
-  }
-
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const picked = Array.from(e.target.files ?? [])
+    e.target.value = ""
     if (picked.length === 0) return
 
     const accepted: File[] = []
@@ -52,8 +46,9 @@ export function PhotoPicker() {
     if (combined.length > MAX_PHOTOS_PER_PLAY) rejected = true
 
     staged.forEach((s) => URL.revokeObjectURL(s.preview))
-    setStaged(capped.map((file) => ({ file, preview: URL.createObjectURL(file) })))
-    syncInputFiles(capped)
+    const next = capped.map((file) => ({ file, preview: URL.createObjectURL(file) }))
+    setStaged(next)
+    onFilesChange(next.map((s) => s.file))
     setError(rejected ? t("someSkipped") : null)
   }
 
@@ -61,7 +56,7 @@ export function PhotoPicker() {
     const next = staged.filter((_, i) => i !== index)
     URL.revokeObjectURL(staged[index].preview)
     setStaged(next)
-    syncInputFiles(next.map((s) => s.file))
+    onFilesChange(next.map((s) => s.file))
     setError(null)
   }
 
@@ -100,7 +95,6 @@ export function PhotoPicker() {
       <input
         ref={inputRef}
         type="file"
-        name="photos"
         accept="image/*"
         multiple
         className="sr-only"

@@ -32,6 +32,11 @@ export type CreatePlayInput = z.infer<typeof createPlaySchema>
 
 export type ActionState = {
   error?: string
+  // Present on success instead of redirecting server-side, so the client
+  // can upload staged photos directly to storage (bypassing the platform's
+  // request-body limit on server actions) before navigating itself.
+  playId?: string
+  groupId?: string
 } | null
 
 export const MAX_PHOTO_BYTES = 5 * 1024 * 1024

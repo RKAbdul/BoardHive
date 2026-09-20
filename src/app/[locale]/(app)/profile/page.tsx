@@ -24,7 +24,11 @@ export default async function ProfilePage() {
         {t("title")}
       </h1>
 
-      <AvatarUploader initialUrl={avatarUrl} displayName={profile?.display_name ?? ""} />
+      <AvatarUploader
+        userId={session.userId}
+        initialUrl={avatarUrl}
+        displayName={profile?.display_name ?? ""}
+      />
 
       <div className="grid grid-cols-3 divide-x divide-border rounded-xl border border-border bg-card">
         <div className="flex flex-col items-center gap-0.5 px-2 py-3">

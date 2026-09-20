@@ -4,9 +4,7 @@ import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { requireSession } from "@/lib/dal"
 
-const MAX_AVATAR_BYTES = 5 * 1024 * 1024
-
-export type AvatarErrorCode = "noFile" | "invalidType" | "tooLarge" | "generic"
+export type AvatarErrorCode = "invalidType" | "tooLarge" | "generic"
 
 export async function updateDisplayName(displayName: string) {
   const session = await requireSession()
@@ -19,36 +17,28 @@ export async function updateDisplayName(displayName: string) {
   revalidatePath("/profile")
 }
 
-export async function uploadAvatar(
-  _prevState: { error: AvatarErrorCode | null } | null,
-  formData: FormData
+// The file itself is uploaded client-side, straight to Supabase Storage —
+// Vercel's serverless functions cap request bodies at 4.5MB, well under
+// what a real photo can be. This only records the resulting path once
+// that upload has already succeeded.
+export async function confirmAvatarUpload(
+  storagePath: string
 ): Promise<{ error: AvatarErrorCode | null }> {
   const session = await requireSession()
-  const file = formData.get("avatar")
 
-  if (!(file instanceof File) || file.size === 0) {
-    return { error: "noFile" }
-  }
-  if (!file.type.startsWith("image/")) {
-    return { error: "invalidType" }
-  }
-  if (file.size > MAX_AVATAR_BYTES) {
-    return { error: "tooLarge" }
+  // Defense in depth — storage RLS already scopes the upload itself to the
+  // caller's own folder, but the path is still client-supplied, so it
+  // shouldn't be trusted blindly for the DB write either.
+  if (storagePath !== `${session.userId}/avatar`) {
+    return { error: "generic" }
   }
 
   const supabase = await createClient()
-  const path = `${session.userId}/avatar`
-
-  const { error: uploadError } = await supabase.storage
-    .from("avatars")
-    .upload(path, file, { upsert: true, contentType: file.type })
-  if (uploadError) return { error: "generic" }
-
-  const { error: updateError } = await supabase
+  const { error } = await supabase
     .from("profiles")
-    .update({ avatar_url: path })
+    .update({ avatar_url: storagePath })
     .eq("id", session.userId)
-  if (updateError) return { error: "generic" }
+  if (error) return { error: "generic" }
 
   revalidatePath("/profile")
   return { error: null }

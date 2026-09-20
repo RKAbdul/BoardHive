@@ -6,48 +6,7 @@ import { redirect } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { requireSession } from "@/lib/dal"
 import { searchGames as searchGamesQuery, getFactionsForGame } from "./data"
-import {
-  createPlaySchema,
-  MAX_PHOTO_BYTES,
-  MAX_PHOTOS_PER_PLAY,
-  type ActionState,
-  type PhotoErrorCode,
-} from "./schemas"
-
-type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>
-
-// Shared by both the play-creation flow (photos attached up front) and the
-// standalone uploader on the play detail page (photos added later) so the
-// same validation, storage path convention, and rollback-on-failed-insert
-// behavior apply either way.
-async function uploadOnePhoto(
-  supabase: SupabaseServerClient,
-  groupId: string,
-  playId: string,
-  userId: string,
-  file: File
-): Promise<{ error: PhotoErrorCode | null }> {
-  if (file.size === 0) return { error: "generic" }
-  if (!file.type.startsWith("image/")) return { error: "invalidType" }
-  if (file.size > MAX_PHOTO_BYTES) return { error: "tooLarge" }
-
-  const path = `${groupId}/${playId}/${crypto.randomUUID()}`
-
-  const { error: uploadError } = await supabase.storage
-    .from("play-photos")
-    .upload(path, file, { contentType: file.type })
-  if (uploadError) return { error: "generic" }
-
-  const { error: insertError } = await supabase
-    .from("photos")
-    .insert({ play_id: playId, storage_path: path, uploaded_by: userId })
-  if (insertError) {
-    await supabase.storage.from("play-photos").remove([path])
-    return { error: "generic" }
-  }
-
-  return { error: null }
-}
+import { createPlaySchema, type ActionState, type PhotoErrorCode } from "./schemas"
 
 export async function searchGamesAction(query: string) {
   return searchGamesQuery(query)
@@ -156,19 +115,14 @@ export async function createPlay(
     return { error: participantsError.message }
   }
 
-  // Photos are attached best-effort: the client already validates type and
-  // size before a file ever gets picked, so a failure here is rare (e.g. a
-  // transient storage hiccup) and shouldn't block the play — which already
-  // has the data that actually matters — from being logged.
-  const photoFiles = formData.getAll("photos").filter((f): f is File => f instanceof File && f.size > 0)
-  for (const file of photoFiles.slice(0, MAX_PHOTOS_PER_PLAY)) {
-    await uploadOnePhoto(supabase, groupId, play.id, session.userId, file)
-  }
-
   revalidatePath(`/hives/${groupId}`)
   revalidatePath(`/hives/${groupId}/plays`)
-  redirect({ href: `/hives/${groupId}/plays/${play.id}`, locale })
-  return null
+
+  // No redirect here: any staged photos still need to go from the client
+  // straight to storage (a server action's request body can't carry them —
+  // see confirmPhotoUpload below), so the client navigates itself once
+  // those uploads finish.
+  return { playId: play.id, groupId }
 }
 
 export async function deletePlay(groupId: string, playId: string) {
@@ -201,19 +155,32 @@ export async function deleteComment(groupId: string, playId: string, commentId: 
   revalidatePath(`/hives/${groupId}/plays/${playId}`)
 }
 
-export async function uploadPlayPhoto(
+// The file itself is uploaded client-side, straight to Supabase Storage —
+// see the comment on createPlay for why. This only records the resulting
+// path once that upload has already succeeded, so it's a tiny payload with
+// no platform body-size concern.
+export async function confirmPhotoUpload(
   groupId: string,
   playId: string,
-  formData: FormData
+  storagePath: string
 ): Promise<{ error: PhotoErrorCode | null }> {
   const session = await requireSession()
-  const file = formData.get("photo")
-  if (!(file instanceof File)) return { error: "generic" }
+
+  // Defense in depth — storage RLS already scopes the upload itself to a
+  // group the caller belongs to, but the path is still client-supplied, so
+  // it shouldn't be trusted blindly for the DB write either.
+  if (!storagePath.startsWith(`${groupId}/${playId}/`)) {
+    return { error: "generic" }
+  }
 
   const supabase = await createClient()
-  const result = await uploadOnePhoto(supabase, groupId, playId, session.userId, file)
-  if (!result.error) revalidatePath(`/hives/${groupId}/plays/${playId}`)
-  return result
+  const { error } = await supabase
+    .from("photos")
+    .insert({ play_id: playId, storage_path: storagePath, uploaded_by: session.userId })
+  if (error) return { error: "generic" }
+
+  revalidatePath(`/hives/${groupId}/plays/${playId}`)
+  return { error: null }
 }
 
 export async function deletePlayPhoto(
