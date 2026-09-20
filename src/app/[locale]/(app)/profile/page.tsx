@@ -12,11 +12,15 @@ export default async function ProfilePage() {
   const t = await getTranslations("profile")
   const format = await getFormatter()
   const session = await requireSession()
-  const profile = await getCurrentProfile()
-  const [avatarUrl, stats] = await Promise.all([
-    getAvatarSignedUrl(profile?.avatar_url ?? null),
+  // getProfileStats only needs the session, not the profile row — it was
+  // previously stuck waiting on getCurrentProfile for no reason, adding a
+  // fully avoidable sequential round-trip to every page load. Only the
+  // avatar URL genuinely depends on the profile (needs avatar_url).
+  const [profile, stats] = await Promise.all([
+    getCurrentProfile(),
     getProfileStats(session.userId),
   ])
+  const avatarUrl = await getAvatarSignedUrl(profile?.avatar_url ?? null)
 
   return (
     <div className="flex flex-col gap-8 px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-6">
