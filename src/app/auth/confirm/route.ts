@@ -71,3 +71,13 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.redirect(confirmUrl)
 }
+
+// Next.js serves HEAD requests through the GET handler above by default
+// when no HEAD handler is defined — and a HEAD is exactly what a link
+// scanner or an email client's own "is this safe" prescan sends. This
+// route never consumes a token itself either way (see the comment above),
+// but responding without touching the query string at all is the
+// documented-safe pattern: https://github.com/supabase/agent-skills/issues/586
+export function HEAD() {
+  return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } })
+}
