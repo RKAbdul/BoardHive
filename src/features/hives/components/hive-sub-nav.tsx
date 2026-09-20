@@ -22,6 +22,7 @@ export function HiveSubNav({ groupId }: { groupId: string }) {
     { href: `${base}/stats`, label: t("stats"), match: (p: string) => p.startsWith(`${base}/stats`) },
     { href: `${base}/library`, label: t("library"), match: (p: string) => p.startsWith(`${base}/library`) },
     { href: `${base}/members`, label: t("members"), match: (p: string) => p.startsWith(`${base}/members`) },
+    { href: `${base}/tools`, label: t("tools"), match: (p: string) => p.startsWith(`${base}/tools`) },
     { href: `${base}/settings`, label: t("settings"), match: (p: string) => p.startsWith(`${base}/settings`) },
   ]
 

@@ -52,6 +52,43 @@ export async function getHiveMembers(groupId: string) {
   return data
 }
 
+/**
+ * A single member's row, scoped to this hive — RLS (`group_members_select_members`)
+ * only returns it if the caller shares the hive with them, so a stranger's
+ * userId here resolves to null exactly like a non-member's would.
+ */
+export async function getHiveMember(groupId: string, userId: string) {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("group_members")
+    .select("user_id, role, joined_at, profile:profiles(display_name, avatar_url)")
+    .eq("group_id", groupId)
+    .eq("user_id", userId)
+    .maybeSingle()
+
+  return data
+}
+
+export async function getMemberHiveStats(groupId: string, userId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("play_participants")
+    .select("is_winner, plays!inner(group_id)")
+    .eq("user_id", userId)
+    .eq("plays.group_id", groupId)
+
+  if (error) throw error
+
+  const totalPlays = data.length
+  const totalWins = data.filter((p) => p.is_winner).length
+
+  return {
+    totalPlays,
+    totalWins,
+    winRate: totalPlays > 0 ? totalWins / totalPlays : 0,
+  }
+}
+
 export async function getMyRole(groupId: string, userId: string) {
   const supabase = await createClient()
   const { data } = await supabase

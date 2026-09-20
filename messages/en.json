@@ -121,7 +121,8 @@
       "stats": "Stats",
       "members": "Members",
       "library": "Library",
-      "settings": "Settings"
+      "settings": "Settings",
+      "tools": "Tools"
     }
   },
   "plays": {
@@ -225,6 +226,7 @@
     "playCount": "{count, plural, one {# play} other {# plays}}",
     "groupTitle": "{name}'s library",
     "groupEmpty": "No one in this hive has added games yet.",
+    "memberEmpty": "{name} hasn't added any games yet.",
     "ownedBy": "{count, plural, one {# owner} other {# owners}}",
     "remove": "Remove"
   },
@@ -249,6 +251,50 @@
     "deleteHive": "Delete hive",
     "confirmLeave": "Leave this hive? You'll need a new invite to rejoin.",
     "confirmDelete": "Delete this hive permanently? This removes all plays, photos, and comments for everyone. This can't be undone."
+  },
+  "tools": {
+    "title": "Tools",
+    "tabs": {
+      "order": "Turn order",
+      "teams": "Teams",
+      "random": "Random"
+    },
+    "participants": {
+      "label": "Who's playing?",
+      "guestPlaceholder": "Guest name",
+      "addGuest": "Add",
+      "empty": "Pick at least one player."
+    },
+    "order": {
+      "gameLabel": "Game (optional)",
+      "pickGame": "Pick a game",
+      "changeGame": "Change",
+      "factionHint": "Asymmetric factions registered for this game will be dealt out too.",
+      "shuffle": "Shuffle order",
+      "shuffleAgain": "Shuffle again"
+    },
+    "teams": {
+      "teamCount": "Number of teams",
+      "team": "Team {number}",
+      "decrease": "Fewer teams",
+      "increase": "More teams",
+      "shuffle": "Make teams",
+      "shuffleAgain": "Reshuffle"
+    },
+    "random": {
+      "coin": {
+        "title": "Coin flip",
+        "flip": "Flip",
+        "heads": "Heads",
+        "tails": "Tails"
+      },
+      "dice": {
+        "title": "Dice & numbers",
+        "min": "Min",
+        "max": "Max",
+        "roll": "Roll"
+      }
+    }
   },
   "profile": {
     "title": "Profile",

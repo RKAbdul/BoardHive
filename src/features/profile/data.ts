@@ -29,3 +29,24 @@ export async function getAvatarSignedUrl(path: string | null) {
   if (error) return null
   return data.signedUrl
 }
+
+/**
+ * Batched form of getAvatarSignedUrl for lists (e.g. a members roster) —
+ * one storage round-trip instead of one per row. Keyed by the original
+ * storage path so callers can look up each member's URL by their
+ * profile.avatar_url.
+ */
+export async function getAvatarSignedUrls(paths: (string | null)[]) {
+  const uniquePaths = [...new Set(paths.filter((p): p is string => !!p))]
+  if (uniquePaths.length === 0) return new Map<string, string>()
+
+  const supabase = await createClient()
+  const { data, error } = await supabase.storage.from("avatars").createSignedUrls(uniquePaths, 3600)
+  if (error) return new Map<string, string>()
+
+  const map = new Map<string, string>()
+  for (const entry of data) {
+    if (entry.path && entry.signedUrl) map.set(entry.path, entry.signedUrl)
+  }
+  return map
+}

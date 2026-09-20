@@ -121,7 +121,8 @@
       "stats": "Estadísticas",
       "members": "Miembros",
       "library": "Colección",
-      "settings": "Ajustes"
+      "settings": "Ajustes",
+      "tools": "Herramientas"
     }
   },
   "plays": {
@@ -225,6 +226,7 @@
     "playCount": "{count, plural, one {# partida} other {# partidas}}",
     "groupTitle": "Colección de {name}",
     "groupEmpty": "Nadie en este hive ha añadido juegos todavía.",
+    "memberEmpty": "{name} aún no ha añadido ningún juego.",
     "ownedBy": "{count, plural, one {# propietario} other {# propietarios}}",
     "remove": "Quitar"
   },
@@ -249,6 +251,50 @@
     "deleteHive": "Eliminar hive",
     "confirmLeave": "¿Abandonar este hive? Necesitarás una nueva invitación para volver a unirte.",
     "confirmDelete": "¿Eliminar este hive permanentemente? Esto elimina todas las partidas, fotos y comentarios para todos. No se puede deshacer."
+  },
+  "tools": {
+    "title": "Herramientas",
+    "tabs": {
+      "order": "Orden de turno",
+      "teams": "Equipos",
+      "random": "Aleatorio"
+    },
+    "participants": {
+      "label": "¿Quién juega?",
+      "guestPlaceholder": "Nombre del invitado",
+      "addGuest": "Añadir",
+      "empty": "Elige al menos un jugador."
+    },
+    "order": {
+      "gameLabel": "Juego (opcional)",
+      "pickGame": "Elegir un juego",
+      "changeGame": "Cambiar",
+      "factionHint": "También se repartirán las facciones asimétricas registradas para este juego.",
+      "shuffle": "Sortear orden",
+      "shuffleAgain": "Sortear de nuevo"
+    },
+    "teams": {
+      "teamCount": "Número de equipos",
+      "team": "Equipo {number}",
+      "decrease": "Menos equipos",
+      "increase": "Más equipos",
+      "shuffle": "Crear equipos",
+      "shuffleAgain": "Repartir de nuevo"
+    },
+    "random": {
+      "coin": {
+        "title": "Cara o cruz",
+        "flip": "Lanzar",
+        "heads": "Cara",
+        "tails": "Cruz"
+      },
+      "dice": {
+        "title": "Dados y números",
+        "min": "Mín",
+        "max": "Máx",
+        "roll": "Tirar"
+      }
+    }
   },
   "profile": {
     "title": "Perfil",
