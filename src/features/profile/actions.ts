@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath, revalidateTag } from "next/cache"
+import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 import { requireSession } from "@/lib/dal"
 
@@ -40,11 +40,6 @@ export async function confirmAvatarUpload(
     .eq("id", session.userId)
   if (error) return { error: "generic" }
 
-  // The upload reused the same path (upsert), so the previously-cached
-  // signed URL now points at stale content — `{ expire: 0 }` forces an
-  // immediate miss instead of Next 16's default stale-while-revalidate,
-  // since serving the old URL even once here means showing the old photo.
-  revalidateTag(`avatar:${storagePath}`, { expire: 0 })
   revalidatePath("/profile")
   return { error: null }
 }

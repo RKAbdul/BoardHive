@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath, revalidateTag } from "next/cache"
+import { revalidatePath } from "next/cache"
 import { getLocale, getTranslations } from "next-intl/server"
 import { redirect } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/server"
@@ -193,8 +193,5 @@ export async function deletePlayPhoto(
   const supabase = await createClient()
   await supabase.from("photos").delete().eq("id", photoId)
   await supabase.storage.from("play-photos").remove([storagePath])
-  // `{ expire: 0 }` forces an immediate cache miss rather than serving the
-  // now-deleted photo's stale signed URL one more time.
-  revalidateTag(`photo:${storagePath}`, { expire: 0 })
   revalidatePath(`/hives/${groupId}/plays/${playId}`)
 }

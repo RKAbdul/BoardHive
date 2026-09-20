@@ -68,14 +68,14 @@ export async function getPlayById(playId: string) {
   return data
 }
 
-// Play photos are immutable once uploaded (only created or deleted, never
-// replaced in place), so caching their signed URLs carries no staleness
-// risk beyond a delete — which deletePlayPhoto already busts via tag. Same
-// motivation as the avatar caching in features/profile/data.ts: a stable
-// URL is what lets the browser actually cache the image bytes, and it
-// saves a Storage round-trip on every render of a play with photos.
-const PHOTO_URL_TTL_SECONDS = 3300
-
+// A stable signed URL (instead of a fresh token on every render) is what
+// lets the browser actually cache the image bytes, and it saves a Storage
+// round-trip on every render of a play with photos. No manual invalidation
+// needed: the cache key is the exact set of paths passed in, and that set
+// always comes straight from the photos this play currently has in the DB
+// — delete one and the next render calls this with a shorter path list,
+// which is a different cache key on its own. A stale entry for the old,
+// longer list just goes unused; nothing ever reads it again.
 export async function getPlayPhotoUrls(paths: string[]) {
   const urls = new Map<string, string>()
   if (paths.length === 0) return urls
@@ -90,7 +90,7 @@ export async function getPlayPhotoUrls(paths: string[]) {
         .map((entry) => ({ path: entry.path ?? "", signedUrl: entry.signedUrl! }))
     },
     ["play-photo-signed-urls", ...paths.slice().sort()],
-    { revalidate: PHOTO_URL_TTL_SECONDS, tags: paths.map((p) => `photo:${p}`) }
+    { revalidate: 3300 }
   )()
 
   for (const entry of entries) {

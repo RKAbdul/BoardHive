@@ -5,14 +5,19 @@ import { createClient } from "@/lib/supabase/server"
 // A fresh signed URL — and its query-string token — is generated on every
 // call, which defeats the browser's own HTTP cache for the image bytes
 // even though nothing changed: same file, different URL, forced re-fetch
-// every render. Caching the signed URL itself (well under its own 1hr
-// expiry) makes repeat requests for the same file return the identical
-// URL, so the browser can actually cache the image — and it cuts the
-// Storage round-trip these functions would otherwise make on every render.
-// Tagged by storage path so `confirmAvatarUpload` can bust exactly this
-// entry the moment a user replaces their avatar, never leaving a stale
-// cached URL pointing at old-but-still-there content past that point.
-const AVATAR_URL_TTL_SECONDS = 3300
+// every render. Caching the signed URL itself makes repeat requests for
+// the same file return the identical URL, so the browser can actually
+// cache the image, and it cuts the Storage round-trip these functions
+// would otherwise make on every render.
+//
+// Unlike play photos, an avatar's path is reused on every upload (upsert
+// to a fixed `${userId}/avatar`), so the cached URL genuinely can go
+// stale when someone replaces their photo. Rather than wiring up manual
+// invalidation for that, this just keeps the window short — a replaced
+// avatar reaching every other page within a few minutes is a perfectly
+// normal, unremarkable thing for an app this size, and it's simpler and
+// harder to get wrong than tag-based busting.
+const AVATAR_URL_TTL_SECONDS = 300
 
 export async function getProfileStats(userId: string) {
   const supabase = await createClient()
@@ -46,7 +51,7 @@ export async function getAvatarSignedUrl(path: string | null) {
       return error ? null : data.signedUrl
     },
     ["avatar-signed-url", path],
-    { revalidate: AVATAR_URL_TTL_SECONDS, tags: [`avatar:${path}`] }
+    { revalidate: AVATAR_URL_TTL_SECONDS }
   )()
 }
 
@@ -54,8 +59,7 @@ export async function getAvatarSignedUrl(path: string | null) {
  * Batched form of getAvatarSignedUrl for lists (e.g. a members roster) —
  * one storage round-trip instead of one per row. Keyed by the original
  * storage path so callers can look up each member's URL by their
- * profile.avatar_url. Tagged with every path in the batch, so replacing
- * any one member's avatar invalidates this cached batch too.
+ * profile.avatar_url.
  */
 export async function getAvatarSignedUrls(paths: (string | null)[]) {
   const uniquePaths = [...new Set(paths.filter((p): p is string => !!p))]
@@ -69,7 +73,7 @@ export async function getAvatarSignedUrls(paths: (string | null)[]) {
       return data.map((d) => ({ path: d.path, signedUrl: d.signedUrl }))
     },
     ["avatar-signed-urls", ...uniquePaths.sort()],
-    { revalidate: AVATAR_URL_TTL_SECONDS, tags: uniquePaths.map((p) => `avatar:${p}`) }
+    { revalidate: AVATAR_URL_TTL_SECONDS }
   )()
 
   const map = new Map<string, string>()
