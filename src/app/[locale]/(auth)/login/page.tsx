@@ -10,6 +10,7 @@ export default async function LoginPage({
   const { next, error } = await searchParams
   const nextHref = typeof next === "string" ? next : undefined
   const linkError = error === "invalid_link"
+  const alreadyUsed = error === "link_already_used"
 
   return (
     <div className="flex flex-col gap-6">
@@ -23,6 +24,11 @@ export default async function LoginPage({
       {linkError && (
         <p role="alert" className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
           {t("invalidLink")}
+        </p>
+      )}
+      {alreadyUsed && (
+        <p role="status" className="rounded-lg bg-secondary p-4 text-sm text-secondary-foreground">
+          {t("alreadyConfirmed")}
         </p>
       )}
       <LoginForm nextHref={nextHref} />

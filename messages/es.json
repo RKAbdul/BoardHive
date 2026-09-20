@@ -41,7 +41,8 @@
       "noAccount": "¿Nuevo en Boardhive?",
       "signUpLink": "Crear una cuenta",
       "invalidCredentials": "Ese correo o contraseña no son correctos.",
-      "invalidLink": "Ese enlace no funcionó — puede haber caducado o ya haberse usado. Solicita uno nuevo abajo."
+      "invalidLink": "Ese enlace no funcionó — puede haber caducado o ya haberse usado. Solicita uno nuevo abajo.",
+      "alreadyConfirmed": "Ese enlace de confirmación ya se había abierto — tu cuenta ya debería estar confirmada. Prueba a iniciar sesión abajo."
     },
     "signup": {
       "title": "Crea tu cuenta",

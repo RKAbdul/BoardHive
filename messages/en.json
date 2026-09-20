@@ -41,7 +41,8 @@
       "noAccount": "New to Boardhive?",
       "signUpLink": "Create an account",
       "invalidCredentials": "That email or password isn't right.",
-      "invalidLink": "That link didn't work — it may have expired or already been used. Request a new one below."
+      "invalidLink": "That link didn't work — it may have expired or already been used. Request a new one below.",
+      "alreadyConfirmed": "That confirmation link had already been opened — your account should already be confirmed. Try logging in below."
     },
     "signup": {
       "title": "Create your account",

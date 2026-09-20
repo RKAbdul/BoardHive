@@ -22,30 +22,40 @@ export async function GET(request: NextRequest) {
   const tokenHash = searchParams.get("token_hash")
   const code = searchParams.get("code")
   const type = searchParams.get("type")
+  // Set by Supabase's own /verify endpoint when IT already rejected the
+  // token (most commonly: something already consumed the single-use token
+  // before this request — see the "already used" handling below).
+  const supabaseErrorCode = searchParams.get("error_code")
   const next = searchParams.get("next") ?? `/${routing.defaultLocale}`
 
+  // `next` is already locale-prefixed (e.g. "/es/reset-password") by
+  // whichever action built the original email link, so error redirects and
+  // the confirm page itself both stay at that same locale.
+  const [, localeSegment] = next.split("/")
+  const locale = routing.locales.includes(localeSegment as Locale)
+    ? (localeSegment as Locale)
+    : routing.defaultLocale
+
   if (!type || !isValidOtpType(type)) {
-    return NextResponse.redirect(
-      new URL(`/${routing.defaultLocale}/login?error=invalid_link`, request.url)
-    )
+    return NextResponse.redirect(new URL(`/${locale}/login?error=invalid_link`, request.url))
   }
 
   // A real link always carries a `code` (PKCE, the default @supabase/ssr
   // flow) or a `token_hash` (implicit/OTP flow) — there's no legitimate
   // link with neither, regardless of `type`.
   if (!tokenHash && !code) {
-    return NextResponse.redirect(
-      new URL(`/${routing.defaultLocale}/login?error=invalid_link`, request.url)
-    )
+    // For a signup confirmation specifically, Supabase already performs the
+    // actual confirmation (setting email_confirmed_at) the moment its own
+    // /verify endpoint is hit — this leg only hands back a session. So if
+    // something got there first (an email client's link-safety prescan is
+    // the usual culprit — Gmail and Outlook both do this) and used up the
+    // single-use token, the account is confirmed either way; the user just
+    // needs to log in normally instead of via the now-dead link. Any other
+    // type (recovery, magic link, etc.) genuinely needs a fresh link, since
+    // the token IS the thing that grants the follow-up action there.
+    const reason = type === "signup" && supabaseErrorCode ? "link_already_used" : "invalid_link"
+    return NextResponse.redirect(new URL(`/${locale}/login?error=${reason}`, request.url))
   }
-
-  // `next` is already locale-prefixed (e.g. "/es/reset-password") by
-  // whichever action built the original email link, so the confirm page
-  // lives at that same locale.
-  const [, localeSegment] = next.split("/")
-  const locale = routing.locales.includes(localeSegment as Locale)
-    ? (localeSegment as Locale)
-    : routing.defaultLocale
 
   const confirmUrl = new URL(`/${locale}/confirm`, request.url)
   confirmUrl.searchParams.set("type", type)
