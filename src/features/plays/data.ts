@@ -1,4 +1,5 @@
 import "server-only"
+import { unstable_cache } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
 
 export async function getRecentPlaysForHive(groupId: string, limit = 5) {
@@ -67,16 +68,33 @@ export async function getPlayById(playId: string) {
   return data
 }
 
+// Play photos are immutable once uploaded (only created or deleted, never
+// replaced in place), so caching their signed URLs carries no staleness
+// risk beyond a delete — which deletePlayPhoto already busts via tag. Same
+// motivation as the avatar caching in features/profile/data.ts: a stable
+// URL is what lets the browser actually cache the image bytes, and it
+// saves a Storage round-trip on every render of a play with photos.
+const PHOTO_URL_TTL_SECONDS = 3300
+
 export async function getPlayPhotoUrls(paths: string[]) {
   const urls = new Map<string, string>()
   if (paths.length === 0) return urls
 
-  const supabase = await createClient()
-  const { data, error } = await supabase.storage.from("play-photos").createSignedUrls(paths, 3600)
-  if (error) return urls
+  const entries = await unstable_cache(
+    async () => {
+      const supabase = await createClient()
+      const { data, error } = await supabase.storage.from("play-photos").createSignedUrls(paths, 3600)
+      if (error) return []
+      return data
+        .filter((entry) => entry.signedUrl && !entry.error)
+        .map((entry) => ({ path: entry.path ?? "", signedUrl: entry.signedUrl! }))
+    },
+    ["play-photo-signed-urls", ...paths.slice().sort()],
+    { revalidate: PHOTO_URL_TTL_SECONDS, tags: paths.map((p) => `photo:${p}`) }
+  )()
 
-  for (const entry of data) {
-    if (entry.signedUrl && !entry.error) urls.set(entry.path ?? "", entry.signedUrl)
+  for (const entry of entries) {
+    urls.set(entry.path, entry.signedUrl)
   }
   return urls
 }

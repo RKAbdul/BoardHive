@@ -1,5 +1,18 @@
 import "server-only"
+import { unstable_cache } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
+
+// A fresh signed URL — and its query-string token — is generated on every
+// call, which defeats the browser's own HTTP cache for the image bytes
+// even though nothing changed: same file, different URL, forced re-fetch
+// every render. Caching the signed URL itself (well under its own 1hr
+// expiry) makes repeat requests for the same file return the identical
+// URL, so the browser can actually cache the image — and it cuts the
+// Storage round-trip these functions would otherwise make on every render.
+// Tagged by storage path so `confirmAvatarUpload` can bust exactly this
+// entry the moment a user replaces their avatar, never leaving a stale
+// cached URL pointing at old-but-still-there content past that point.
+const AVATAR_URL_TTL_SECONDS = 3300
 
 export async function getProfileStats(userId: string) {
   const supabase = await createClient()
@@ -24,28 +37,43 @@ export async function getProfileStats(userId: string) {
 
 export async function getAvatarSignedUrl(path: string | null) {
   if (!path) return null
-  const supabase = await createClient()
-  const { data, error } = await supabase.storage.from("avatars").createSignedUrl(path, 3600)
-  if (error) return null
-  return data.signedUrl
+  return unstable_cache(
+    async () => {
+      const supabase = await createClient()
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .createSignedUrl(path, 3600)
+      return error ? null : data.signedUrl
+    },
+    ["avatar-signed-url", path],
+    { revalidate: AVATAR_URL_TTL_SECONDS, tags: [`avatar:${path}`] }
+  )()
 }
 
 /**
  * Batched form of getAvatarSignedUrl for lists (e.g. a members roster) —
  * one storage round-trip instead of one per row. Keyed by the original
  * storage path so callers can look up each member's URL by their
- * profile.avatar_url.
+ * profile.avatar_url. Tagged with every path in the batch, so replacing
+ * any one member's avatar invalidates this cached batch too.
  */
 export async function getAvatarSignedUrls(paths: (string | null)[]) {
   const uniquePaths = [...new Set(paths.filter((p): p is string => !!p))]
   if (uniquePaths.length === 0) return new Map<string, string>()
 
-  const supabase = await createClient()
-  const { data, error } = await supabase.storage.from("avatars").createSignedUrls(uniquePaths, 3600)
-  if (error) return new Map<string, string>()
+  const entries = await unstable_cache(
+    async () => {
+      const supabase = await createClient()
+      const { data, error } = await supabase.storage.from("avatars").createSignedUrls(uniquePaths, 3600)
+      if (error) return []
+      return data.map((d) => ({ path: d.path, signedUrl: d.signedUrl }))
+    },
+    ["avatar-signed-urls", ...uniquePaths.sort()],
+    { revalidate: AVATAR_URL_TTL_SECONDS, tags: uniquePaths.map((p) => `avatar:${p}`) }
+  )()
 
   const map = new Map<string, string>()
-  for (const entry of data) {
+  for (const entry of entries) {
     if (entry.path && entry.signedUrl) map.set(entry.path, entry.signedUrl)
   }
   return map

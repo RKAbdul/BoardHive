@@ -84,6 +84,19 @@ export async function updateSession(request: NextRequest, response: NextResponse
     return NextResponse.redirect(url)
   }
 
+  // The marketing page has nothing for a signed-in visitor — send them
+  // straight to their hives instead. Doing this here (rather than inside
+  // the page itself, which is where this check used to live) means the
+  // page component no longer has any session-dependent branch, so it can
+  // be fully static instead of running the session check + a DB query on
+  // every single logged-out visit too.
+  if (user && pathWithoutLocale === "/") {
+    const url = request.nextUrl.clone()
+    url.pathname = `/${locale}/hives`
+    url.search = ""
+    return NextResponse.redirect(url)
+  }
+
   // IMPORTANT: return `response` as-is (aside from the redirects above). It
   // carries next-intl's locale rewrite/cookie plus the refreshed auth
   // cookies — replacing it risks dropping either and desyncing the client

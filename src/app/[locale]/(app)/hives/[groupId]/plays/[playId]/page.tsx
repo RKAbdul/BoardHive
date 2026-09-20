@@ -20,13 +20,13 @@ export default async function PlayDetailPage({
   params,
 }: PageProps<"/[locale]/hives/[groupId]/plays/[playId]">) {
   const { groupId, playId } = await params
-  const play = await getPlayById(playId)
+  // Independent of the play lookup below — no reason to serialize them.
+  const [play, session] = await Promise.all([getPlayById(playId), verifySession()])
 
   if (!play || play.group_id !== groupId) {
     notFound()
   }
 
-  const session = await verifySession()
   const format = await getFormatter()
   const t = await getTranslations("plays.detail")
   const tMode = await getTranslations("plays.new.mode")

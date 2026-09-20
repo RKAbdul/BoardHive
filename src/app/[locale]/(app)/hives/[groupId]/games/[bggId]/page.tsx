@@ -6,9 +6,8 @@ import { getGameDetail } from "@/features/games/data"
 import { getGameStatsForHive } from "@/features/stats/data"
 import { getRecentPlaysForGameInHive } from "@/features/plays/data"
 import { Link } from "@/i18n/navigation"
+import { TOKEN_CLASSES } from "@/lib/token-color"
 import { Dices, Medal, Shuffle, Trophy } from "lucide-react"
-
-const TOKEN_CLASSES = ["bg-token-1", "bg-token-2", "bg-token-3", "bg-token-4", "bg-token-5", "bg-token-6"]
 
 export default async function HiveGameStatsPage({
   params,

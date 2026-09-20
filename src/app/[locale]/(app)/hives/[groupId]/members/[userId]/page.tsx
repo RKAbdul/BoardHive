@@ -7,18 +7,8 @@ import { getMyLibrary } from "@/features/library/data"
 import { getAvatarSignedUrl } from "@/features/profile/data"
 import { Link, redirect } from "@/i18n/navigation"
 import type { Locale } from "@/i18n/routing"
+import { tokenClassFor } from "@/lib/token-color"
 import { Dices } from "lucide-react"
-
-const TOKEN_CLASSES = ["bg-token-1", "bg-token-2", "bg-token-3", "bg-token-4", "bg-token-5", "bg-token-6"]
-
-function tokenClassFor(id: string) {
-  let hash = 0
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash << 5) - hash + id.charCodeAt(i)
-    hash |= 0
-  }
-  return TOKEN_CLASSES[Math.abs(hash) % TOKEN_CLASSES.length]
-}
 
 export default async function MemberProfilePage({
   params,

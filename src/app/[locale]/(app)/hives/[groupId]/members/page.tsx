@@ -5,20 +5,8 @@ import { getHiveMembers, getActiveInviteCode } from "@/features/hives/data"
 import { getAvatarSignedUrls } from "@/features/profile/data"
 import { InviteCodeSection } from "@/features/hives/components/invite-code-section"
 import { Link } from "@/i18n/navigation"
+import { tokenClassFor } from "@/lib/token-color"
 import { ChevronRight } from "lucide-react"
-
-const TOKEN_CLASSES = ["bg-token-1", "bg-token-2", "bg-token-3", "bg-token-4", "bg-token-5", "bg-token-6"]
-
-// A stable-per-person token color, matching the same convention used for
-// comment avatars and hive tiles elsewhere in the app.
-function tokenClassFor(id: string) {
-  let hash = 0
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash << 5) - hash + id.charCodeAt(i)
-    hash |= 0
-  }
-  return TOKEN_CLASSES[Math.abs(hash) % TOKEN_CLASSES.length]
-}
 
 export default async function MembersPage({
   params,

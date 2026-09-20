@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { shuffle } from "@/features/tools/lib/shuffle"
 import type { ToolParticipant } from "@/features/tools/types"
+import { TOKEN_CLASSES } from "@/lib/token-color"
 import { Minus, Plus } from "lucide-react"
-
-const TOKEN_CLASSES = ["bg-token-1", "bg-token-2", "bg-token-3", "bg-token-4", "bg-token-5", "bg-token-6"]
 
 export function TeamsTool({ participants }: { participants: ToolParticipant[] }) {
   const t = useTranslations("tools.teams")

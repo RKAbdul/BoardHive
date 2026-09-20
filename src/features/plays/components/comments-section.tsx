@@ -5,6 +5,7 @@ import { useFormatter, useNow, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { upsertComment } from "@/features/plays/actions"
+import { tokenClassFor } from "@/lib/token-color"
 import { Pencil } from "lucide-react"
 
 type Comment = {
@@ -13,20 +14,6 @@ type Comment = {
   body: string
   created_at: string
   profile: { display_name: string } | null
-}
-
-const TOKEN_CLASSES = ["bg-token-1", "bg-token-2", "bg-token-3", "bg-token-4", "bg-token-5", "bg-token-6"]
-
-// A stable-per-person token color, matching the same convention hive/play
-// tokens already use elsewhere, so a given commenter's initial always reads
-// the same "color" wherever they show up.
-function tokenClassFor(id: string) {
-  let hash = 0
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash << 5) - hash + id.charCodeAt(i)
-    hash |= 0
-  }
-  return TOKEN_CLASSES[Math.abs(hash) % TOKEN_CLASSES.length]
 }
 
 export function CommentsSection({

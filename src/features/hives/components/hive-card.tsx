@@ -1,7 +1,6 @@
 import { Link } from "@/i18n/navigation"
+import { tokenClassFor } from "@/lib/token-color"
 import { ChevronRight } from "lucide-react"
-
-const TOKEN_CLASSES = ["bg-token-1", "bg-token-2", "bg-token-3", "bg-token-4", "bg-token-5", "bg-token-6"]
 
 export function HiveCard({
   hive,
@@ -13,10 +12,7 @@ export function HiveCard({
 }) {
   // A stable-per-hive token color, so the same hive always reads the same
   // "piece color" across the app — not random on every render.
-  const tokenClass =
-    TOKEN_CLASSES[
-      Math.abs(hashCode(hive.id)) % TOKEN_CLASSES.length
-    ]
+  const tokenClass = tokenClassFor(hive.id)
 
   return (
     <Link
@@ -37,13 +33,4 @@ export function HiveCard({
       <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
     </Link>
   )
-}
-
-function hashCode(str: string) {
-  let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i)
-    hash |= 0
-  }
-  return hash
 }

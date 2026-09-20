@@ -1,23 +1,14 @@
 import { getTranslations } from "next-intl/server"
-import { verifySession } from "@/lib/dal"
-import { redirect, Link } from "@/i18n/navigation"
-import { getHivesForUser } from "@/features/hives/data"
+import { Link } from "@/i18n/navigation"
 import { LocaleSwitcher } from "@/components/layout/locale-switcher"
 import { LinkButton } from "@/components/ui/link-button"
-import type { Locale } from "@/i18n/routing"
 
-export default async function RootPage({ params }: PageProps<"/[locale]">) {
-  const { locale } = (await params) as { locale: Locale }
-  const session = await verifySession()
-
-  if (session) {
-    const hives = await getHivesForUser(session.userId)
-    if (hives.length === 1 && hives[0].group) {
-      redirect({ href: `/hives/${hives[0].group.id}`, locale })
-    }
-    redirect({ href: "/hives", locale })
-  }
-
+// A signed-in visitor never actually sees this render — middleware
+// (lib/supabase/proxy.ts) redirects them to /hives before the request gets
+// here. That's deliberate: it keeps this component free of any
+// session-dependent branch, so Next can serve it as static content instead
+// of running a session check + DB query on every single visit.
+export default async function RootPage() {
   const t = await getTranslations("landing")
 
   return (

@@ -1,8 +1,7 @@
 import type { CSSProperties } from "react"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { Link } from "@/i18n/navigation"
-
-const TOKEN_CLASSES = ["bg-token-1", "bg-token-2", "bg-token-3", "bg-token-4", "bg-token-5", "bg-token-6"]
+import { TOKEN_CLASSES } from "@/lib/token-color"
 
 type PlayParticipant = {
   id: string
