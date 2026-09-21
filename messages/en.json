@@ -75,9 +75,8 @@
       "success": "Password updated. You're logged in."
     },
     "confirm": {
-      "title": "Confirm it's you",
-      "body": "Tap continue to finish this. We ask for one more tap here so an email security scanner can't use up your link before you get to click it.",
-      "continue": "Continue"
+      "title": "Confirming your email",
+      "loading": "Just a moment — we're finishing this up."
     },
     "logout": "Log out"
   },

@@ -1,6 +1,5 @@
 "use server"
 
-import { headers } from "next/headers"
 import { redirect as redirectPlain } from "next/navigation"
 import type { EmailOtpType } from "@supabase/supabase-js"
 import { getLocale, getTranslations } from "next-intl/server"
@@ -13,13 +12,6 @@ import {
   getSignupSchema,
   type ActionState,
 } from "./schemas"
-
-async function getOrigin() {
-  const h = await headers()
-  const proto = h.get("x-forwarded-proto") ?? "https"
-  const host = h.get("host")
-  return `${proto}://${host}`
-}
 
 export async function signup(
   _prevState: ActionState,
@@ -41,22 +33,14 @@ export async function signup(
 
   const { displayName, email, password } = validated.data
   const supabase = await createClient()
-  const origin = await getOrigin()
 
-  // The confirmation email's actual link is built entirely by the "Confirm
-  // signup" template in the Supabase dashboard now (token_hash straight to
-  // our own /confirm page — see confirmAuthLink), not from this value, so
-  // it's no longer substituted into anything the user sees. Kept anyway:
-  // Supabase still validates it against the project's allow-listed Redirect
-  // URLs at request time, and removing it hasn't been verified safe against
-  // the live signUp call.
+  // No emailRedirectTo: the "Confirm signup" template builds its link
+  // directly (token_hash straight to our own /confirm page — see
+  // confirmAuthLink), so there's nothing left for this to feed into.
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: { display_name: displayName },
-      emailRedirectTo: `${origin}/${locale}`,
-    },
+    options: { data: { display_name: displayName } },
   })
 
   if (error) {
@@ -128,20 +112,13 @@ export async function requestPasswordReset(
   }
 
   const supabase = await createClient()
-  const origin = await getOrigin()
 
   // Errors here are not surfaced to the caller (avoids confirming which
   // emails have accounts); the UI always shows the same "check your email"
-  // state regardless of outcome.
-  //
-  // Same as signup's emailRedirectTo above: the "Reset Password" template
-  // now builds its link directly (token_hash straight to our own /confirm
-  // page), so this value isn't substituted into anything the user sees —
-  // kept only because Supabase still validates it against the allow-listed
-  // Redirect URLs at request time.
-  await supabase.auth.resetPasswordForEmail(validated.data.email, {
-    redirectTo: `${origin}/${locale}/reset-password`,
-  })
+  // state regardless of outcome. No redirectTo: same as signup, the "Reset
+  // Password" template builds its link directly, so there's nothing left
+  // for this to feed into.
+  await supabase.auth.resetPasswordForEmail(validated.data.email)
 
   return { success: true }
 }
@@ -177,12 +154,13 @@ export async function resetPassword(
 // Verifies the token from our own email templates (they link straight here
 // with token_hash — see the Confirm signup / Reset Password templates in
 // the Supabase dashboard, not Supabase's own hosted /verify redirect flow).
-// Only reached by an explicit button click on the /confirm page, which is
-// what keeps an email client's own link-safety prescan from silently
-// consuming the single-use token before the real click. `next` is already a
-// locale-prefixed path built server-side by the action that originated the
-// email link, so this uses a plain (non-locale-rewriting) redirect to avoid
-// double-prefixing it.
+// Called automatically by the /confirm page's client component on mount —
+// an email client's own link-safety prescan only ever does a plain GET of
+// that page, which renders inert HTML and never calls this, so nothing
+// consumes the single-use token before a real visit runs it. `next` is
+// already a locale-prefixed path built server-side by the action that
+// originated the email link, so this uses a plain (non-locale-rewriting)
+// redirect to avoid double-prefixing it.
 export async function confirmAuthLink(tokenHash: string, type: EmailOtpType, next: string) {
   const locale = await getLocale()
   const supabase = await createClient()

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 import { TrackDots } from "@/components/layout/track-dots"
-import { Button } from "@/components/ui/button"
+import { AutoConfirm } from "@/features/auth/components/auto-confirm"
 import { confirmAuthLink } from "@/features/auth/actions"
 import { isValidOtpType } from "@/features/auth/schemas"
 
@@ -23,19 +23,12 @@ export default async function ConfirmPage({
   const boundConfirm = confirmAuthLink.bind(null, tokenHash, type, next)
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col items-center gap-6 text-center">
       <TrackDots />
-      <div>
-        <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-muted-foreground">{t("body")}</p>
-      </div>
-      <form action={boundConfirm}>
-        <Button type="submit" size="lg" className="w-full">
-          {t("continue")}
-        </Button>
-      </form>
+      <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
+        {t("title")}
+      </h1>
+      <AutoConfirm confirm={boundConfirm} />
     </div>
   )
 }

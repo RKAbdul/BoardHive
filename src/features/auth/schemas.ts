@@ -2,14 +2,11 @@ import * as z from "zod"
 import type { useTranslations } from "next-intl"
 import type { EmailOtpType } from "@supabase/supabase-js"
 
-const VALID_OTP_TYPES: EmailOtpType[] = [
-  "signup",
-  "invite",
-  "magiclink",
-  "recovery",
-  "email_change",
-  "email",
-]
+// The only two types this app's own email templates ever generate — hive
+// invites are a separate, in-app mechanism (group_invites + a code), not
+// Supabase Auth's email-invite flow, and nothing here sends a magic link,
+// email-change confirmation, or generic OTP.
+const VALID_OTP_TYPES: EmailOtpType[] = ["signup", "recovery"]
 
 export function isValidOtpType(type: string): type is EmailOtpType {
   return VALID_OTP_TYPES.includes(type as EmailOtpType)
