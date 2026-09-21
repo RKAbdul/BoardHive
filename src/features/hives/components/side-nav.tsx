@@ -2,14 +2,15 @@
 
 import { useTranslations } from "next-intl"
 import { Link, usePathname } from "@/i18n/navigation"
-import { NAV_ICONS, NAV_TABS } from "@/features/hives/components/nav-items"
+import { NAV_ICONS, NAV_KEYS, navHref, resolveActiveNavKey } from "@/features/hives/components/nav-items"
 import { logout } from "@/features/auth/actions"
 import { LogOut } from "lucide-react"
 
-export function SideNav() {
+export function SideNav({ soleHiveId }: { soleHiveId: string | null }) {
   const t = useTranslations("nav")
   const tCommon = useTranslations("auth")
   const pathname = usePathname()
+  const activeKey = resolveActiveNavKey(pathname, soleHiveId)
 
   return (
     <nav
@@ -24,17 +25,14 @@ export function SideNav() {
       </Link>
 
       <ul className="flex flex-1 flex-col gap-1">
-        {NAV_TABS.map(({ href, key }) => {
+        {NAV_KEYS.map((key) => {
+          const href = navHref(key, soleHiveId)
           const Icon = NAV_ICONS[key]
-          const active =
-            href === "/hives"
-              ? pathname === "/hives" || pathname.startsWith("/hives/")
-              : pathname === href
-
+          const active = key === activeKey
           const label = key === "log" ? t("logPlay") : t(key as "hives" | "stats" | "profile")
 
           return (
-            <li key={href}>
+            <li key={key}>
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}

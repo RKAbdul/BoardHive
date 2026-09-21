@@ -16,18 +16,22 @@ export default async function HiveGameStatsPage({
   const id = Number(bggId)
   if (!Number.isFinite(id)) notFound()
 
-  const game = await getGameDetail(id)
+  // getGameStatsForHive/getRecentPlaysForGameInHive only need groupId/id,
+  // not game itself — they were previously stuck waiting on getGameDetail
+  // for no reason, adding a fully avoidable sequential round-trip to a page
+  // reached from both the library and Stats standings.
+  const [game, { totalPlays, modeCounts, standings, factionStandings }, recentPlays] =
+    await Promise.all([
+      getGameDetail(id),
+      getGameStatsForHive(groupId, id),
+      getRecentPlaysForGameInHive(groupId, id, 3),
+    ])
   if (!game) notFound()
 
   const format = await getFormatter()
   const t = await getTranslations("gameStats")
   const tGames = await getTranslations("games")
   const tPlays = await getTranslations("plays")
-  const [{ totalPlays, modeCounts, standings, factionStandings }, recentPlays] =
-    await Promise.all([
-      getGameStatsForHive(groupId, id),
-      getRecentPlaysForGameInHive(groupId, id, 3),
-    ])
 
   return (
     <div className="flex flex-col gap-8">

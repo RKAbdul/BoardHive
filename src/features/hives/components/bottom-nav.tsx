@@ -2,11 +2,12 @@
 
 import { useTranslations } from "next-intl"
 import { Link, usePathname } from "@/i18n/navigation"
-import { NAV_ICONS, NAV_TABS } from "@/features/hives/components/nav-items"
+import { NAV_ICONS, NAV_KEYS, navHref, resolveActiveNavKey } from "@/features/hives/components/nav-items"
 
-export function BottomNav() {
+export function BottomNav({ soleHiveId }: { soleHiveId: string | null }) {
   const t = useTranslations("nav")
   const pathname = usePathname()
+  const activeKey = resolveActiveNavKey(pathname, soleHiveId)
 
   return (
     <nav
@@ -14,17 +15,14 @@ export function BottomNav() {
       aria-label={t("hives")}
     >
       <ul className="flex items-stretch justify-around">
-        {NAV_TABS.map(({ href, key }) => {
+        {NAV_KEYS.map((key) => {
+          const href = navHref(key, soleHiveId)
           const Icon = NAV_ICONS[key]
-          const active =
-            href === "/hives"
-              ? pathname === "/hives" || pathname.startsWith("/hives/")
-              : pathname === href
-
+          const active = key === activeKey
           const label = key === "log" ? t("logPlay") : t(key as "hives" | "stats" | "profile")
 
           return (
-            <li key={href} className="flex-1">
+            <li key={key} className="flex-1">
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}

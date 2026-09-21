@@ -1,4 +1,5 @@
 import "server-only"
+import { cache } from "react"
 import { createClient } from "@/lib/supabase/server"
 
 export async function getHivesForUser(userId: string) {
@@ -14,12 +15,36 @@ export async function getHivesForUser(userId: string) {
 }
 
 /**
+ * Runs on every page load under the (app) shell (see (app)/layout.tsx) to
+ * let the nav link Stats/Log straight into that one hive instead of through
+ * the picker page — so it deliberately fetches only enough to answer "is it
+ * exactly one" (a group_id column, capped at 2 rows) rather than reusing
+ * getHivesForUser's full name/timestamp row, which the nav never renders.
+ */
+export async function getSoleHiveId(userId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("group_members")
+    .select("group_id")
+    .eq("user_id", userId)
+    .limit(2)
+
+  if (error) throw error
+  return data.length === 1 ? data[0].group_id : null
+}
+
+/**
  * RLS (`groups_select_members`) already scopes this to hives the caller
  * belongs to — a non-member gets an empty result here, not an error, which
  * is exactly what we want: the caller treats that identically to "doesn't
  * exist" (notFound()), never leaking which hive IDs are real.
+ *
+ * Wrapped in cache() because the hive layout (every page under a hive) and
+ * some of those pages themselves (e.g. settings) both need this same row —
+ * without it, that was two identical DB round trips on one request instead
+ * of one.
  */
-export async function getHiveById(groupId: string) {
+export const getHiveById = cache(async (groupId: string) => {
   const supabase = await createClient()
   const { data } = await supabase
     .from("groups")
@@ -28,7 +53,7 @@ export async function getHiveById(groupId: string) {
     .maybeSingle()
 
   return data
-}
+})
 
 export async function getHiveMemberCount(groupId: string) {
   const supabase = await createClient()
