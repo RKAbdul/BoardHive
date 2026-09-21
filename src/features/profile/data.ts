@@ -42,9 +42,15 @@ export async function getProfileStats(userId: string) {
 
 export async function getAvatarSignedUrl(path: string | null) {
   if (!path) return null
+
+  // createClient() reads cookies() — not allowed inside an unstable_cache
+  // scope (throws at runtime, not at build time). Resolving it outside the
+  // cached callback fixes it: the callback only ever touches the
+  // already-built client, never cookies() itself.
+  const supabase = await createClient()
+
   return unstable_cache(
     async () => {
-      const supabase = await createClient()
       const { data, error } = await supabase.storage
         .from("avatars")
         .createSignedUrl(path, 3600)
@@ -65,9 +71,10 @@ export async function getAvatarSignedUrls(paths: (string | null)[]) {
   const uniquePaths = [...new Set(paths.filter((p): p is string => !!p))]
   if (uniquePaths.length === 0) return new Map<string, string>()
 
+  const supabase = await createClient()
+
   const entries = await unstable_cache(
     async () => {
-      const supabase = await createClient()
       const { data, error } = await supabase.storage.from("avatars").createSignedUrls(uniquePaths, 3600)
       if (error) return []
       return data.map((d) => ({ path: d.path, signedUrl: d.signedUrl }))

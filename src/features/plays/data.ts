@@ -80,9 +80,16 @@ export async function getPlayPhotoUrls(paths: string[]) {
   const urls = new Map<string, string>()
   if (paths.length === 0) return urls
 
+  // createClient() reads cookies() — Next.js doesn't allow that inside an
+  // unstable_cache scope (throws at runtime, not at build time, which is
+  // why this didn't surface until production traffic actually hit a play
+  // with photos). Resolving the client first, outside the cached callback,
+  // fixes it: the callback below only ever touches the already-built
+  // client, never cookies() itself.
+  const supabase = await createClient()
+
   const entries = await unstable_cache(
     async () => {
-      const supabase = await createClient()
       const { data, error } = await supabase.storage.from("play-photos").createSignedUrls(paths, 3600)
       if (error) return []
       return data
