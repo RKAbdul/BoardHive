@@ -54,7 +54,7 @@ export function PhotoCarousel({
     <div className="flex flex-col gap-2">
       <div
         ref={trackRef}
-        className="-mx-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4"
+        className="-mx-4 flex touch-pan-x snap-x snap-mandatory gap-2 overflow-x-auto px-4"
       >
         {photos.map((photo, i) => (
           <div

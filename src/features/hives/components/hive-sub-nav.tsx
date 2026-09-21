@@ -27,7 +27,10 @@ export function HiveSubNav({ groupId }: { groupId: string }) {
   ]
 
   return (
-    <nav className="flex gap-1 overflow-x-auto border-b border-border px-4" aria-label={t("recentPlays")}>
+    <nav
+      className="flex touch-pan-x gap-1 overflow-x-auto border-b border-border px-4"
+      aria-label={t("recentPlays")}
+    >
       {tabs.map((tab) => {
         const active = tab.match(pathname)
         return (

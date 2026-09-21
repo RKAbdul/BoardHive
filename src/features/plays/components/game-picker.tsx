@@ -87,7 +87,7 @@ export function GamePicker({
 
 function GameGrid({ games, onSelect }: { games: Game[]; onSelect: (g: Game) => void }) {
   return (
-    <div className="mt-2 -mx-4 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-4 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-5">
+    <div className="mt-2 flex touch-pan-x snap-x snap-mandatory gap-2 overflow-x-auto pb-1 sm:grid sm:snap-none sm:grid-cols-4 sm:overflow-visible sm:pb-0 md:grid-cols-5">
       {games.map((game) => (
         <button
           key={game.bgg_id}

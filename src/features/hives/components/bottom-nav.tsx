@@ -11,7 +11,14 @@ export function BottomNav({ soleHiveId }: { soleHiveId: string | null }) {
 
   return (
     <nav
-      className="sticky bottom-0 z-20 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
+      // will-change-transform: a known, low-risk nudge for WebKit to give
+      // this its own compositing layer, which helps with various WebKit
+      // position-recalculation glitches in general. Not a confirmed fix for
+      // the specific iOS 26 Safari bug where `position: sticky; bottom: 0`
+      // stops tracking the viewport as the toolbar hides/shows on scroll —
+      // that's an open, unresolved WebKit bug (Apple Developer Forums
+      // thread #801028) with no known reliable fix as of this writing.
+      className="sticky bottom-0 z-20 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] will-change-transform md:hidden"
       aria-label={t("hives")}
     >
       <ul className="flex items-stretch justify-around">
