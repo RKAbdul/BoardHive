@@ -9,11 +9,10 @@ const PUBLIC_ROUTE_PREFIXES = [
   "/forgot-password",
   "/reset-password",
   "/invite",
-  // The recovery-link continuation page: reached while deliberately
+  // The signup/recovery link continuation page: reached while deliberately
   // unauthenticated (it's the step that establishes the session via
-  // exchangeCodeForSession/verifyOtp), so it must not be treated as a
-  // protected route or the guard below bounces it straight to /login
-  // before it ever gets to run.
+  // verifyOtp), so it must not be treated as a protected route or the guard
+  // below bounces it straight to /login before it ever gets to run.
   "/confirm",
 ]
 

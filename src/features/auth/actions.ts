@@ -43,12 +43,19 @@ export async function signup(
   const supabase = await createClient()
   const origin = await getOrigin()
 
+  // The confirmation email's actual link is built entirely by the "Confirm
+  // signup" template in the Supabase dashboard now (token_hash straight to
+  // our own /confirm page — see confirmAuthLink), not from this value, so
+  // it's no longer substituted into anything the user sees. Kept anyway:
+  // Supabase still validates it against the project's allow-listed Redirect
+  // URLs at request time, and removing it hasn't been verified safe against
+  // the live signUp call.
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { display_name: displayName },
-      emailRedirectTo: `${origin}/auth/confirm?next=/${locale}`,
+      emailRedirectTo: `${origin}/${locale}`,
     },
   })
 
@@ -126,8 +133,14 @@ export async function requestPasswordReset(
   // Errors here are not surfaced to the caller (avoids confirming which
   // emails have accounts); the UI always shows the same "check your email"
   // state regardless of outcome.
+  //
+  // Same as signup's emailRedirectTo above: the "Reset Password" template
+  // now builds its link directly (token_hash straight to our own /confirm
+  // page), so this value isn't substituted into anything the user sees —
+  // kept only because Supabase still validates it against the allow-listed
+  // Redirect URLs at request time.
   await supabase.auth.resetPasswordForEmail(validated.data.email, {
-    redirectTo: `${origin}/auth/confirm?type=recovery&next=/${locale}/reset-password`,
+    redirectTo: `${origin}/${locale}/reset-password`,
   })
 
   return { success: true }
@@ -161,41 +174,32 @@ export async function resetPassword(
   return null
 }
 
-// Verifies the token deferred from app/auth/confirm/route.ts — only reached
-// by an explicit user click (see that file for why the GET itself doesn't
-// verify). `tokenHash`/`type` are single-use, so this can only ever
-// meaningfully succeed once; `next` is already a locale-prefixed path built
-// server-side by the action that originated the email link, so this uses a
-// plain (non-locale-rewriting) redirect to avoid double-prefixing it.
-export async function confirmAuthLink(
-  tokenHash: string | null,
-  code: string | null,
-  type: EmailOtpType,
-  next: string
-) {
+// Verifies the token from our own email templates (they link straight here
+// with token_hash — see the Confirm signup / Reset Password templates in
+// the Supabase dashboard, not Supabase's own hosted /verify redirect flow).
+// Only reached by an explicit button click on the /confirm page, which is
+// what keeps an email client's own link-safety prescan from silently
+// consuming the single-use token before the real click. `next` is already a
+// locale-prefixed path built server-side by the action that originated the
+// email link, so this uses a plain (non-locale-rewriting) redirect to avoid
+// double-prefixing it.
+export async function confirmAuthLink(tokenHash: string, type: EmailOtpType, next: string) {
   const locale = await getLocale()
   const supabase = await createClient()
 
-  // A real recovery/confirmation link always carries a `code` (PKCE, the
-  // default flow for @supabase/ssr) or a `token_hash` (implicit/OTP flow) —
-  // there's no legitimate link with neither, so that case is invalid rather
-  // than a variant to silently pass through.
-  if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+  const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash })
 
-    if (error) {
-      redirect({ href: "/login?error=invalid_link", locale })
-      return
-    }
-  } else if (tokenHash) {
-    const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash })
-
-    if (error) {
-      redirect({ href: "/login?error=invalid_link", locale })
-      return
-    }
-  } else {
-    redirect({ href: "/login?error=invalid_link", locale })
+  if (error) {
+    // otp_expired covers both "actually expired" and "already used" — for a
+    // signup confirmation specifically, Supabase confirms the account the
+    // instant a verifyOtp call succeeds against it, and a second attempt
+    // against the same token always fails this way. So if that second
+    // attempt is what's happening here, the account is fine; the user just
+    // needs to log in rather than reuse a dead link. Other types (recovery,
+    // etc.) genuinely need a fresh link, since the token IS what grants the
+    // follow-up action there.
+    const reason = type === "signup" && error.code === "otp_expired" ? "link_already_used" : "invalid_link"
+    redirect({ href: `/login?error=${reason}`, locale })
     return
   }
 

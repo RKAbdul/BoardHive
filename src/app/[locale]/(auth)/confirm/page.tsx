@@ -10,22 +10,17 @@ export default async function ConfirmPage({
 }: PageProps<"/[locale]/confirm">) {
   const params = await searchParams
   const tokenHash = typeof params.token_hash === "string" ? params.token_hash : null
-  const code = typeof params.code === "string" ? params.code : null
   const type = typeof params.type === "string" ? params.type : null
   const next = typeof params.next === "string" ? params.next : null
 
-  if (!type || !next || !isValidOtpType(type)) {
-    notFound()
-  }
-
-  // A real link always carries a `code` (PKCE) or a `token_hash`
-  // (implicit/OTP) — there's no legitimate link with neither.
-  if (!tokenHash && !code) {
+  // Our own email templates always build this link with token_hash — there's
+  // no legitimate version of it missing one.
+  if (!type || !next || !tokenHash || !isValidOtpType(type)) {
     notFound()
   }
 
   const t = await getTranslations("auth.confirm")
-  const boundConfirm = confirmAuthLink.bind(null, tokenHash, code, type, next)
+  const boundConfirm = confirmAuthLink.bind(null, tokenHash, type, next)
 
   return (
     <div className="flex flex-col gap-6">
