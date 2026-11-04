@@ -197,6 +197,13 @@
           "generic": "Couldn't upload that photo. Try again."
         }
       }
+    },
+    "edit": {
+      "title": "Edit play",
+      "submit": "Save changes",
+      "submitting": "Saving…",
+      "forbidden": "Only the person who logged this play or the hive owner can change it.",
+      "formerMemberNote": "Some players here have left the hive — they stay on this play as they were."
     }
   },
   "stats": {
@@ -213,11 +220,37 @@
     "totalPlays": "{count, plural, one {# play in this hive} other {# plays in this hive}}",
     "empty": "No plays of this game logged in this hive yet.",
     "standings": "Standings",
-    "racingStandings": "Racing standings",
     "factionStandings": "Faction win rates",
     "podiums": "{count, plural, one {# podium} other {# podiums}}",
     "plays": "{count, plural, one {# play} other {# plays}}",
-    "recentPlays": "Recent plays"
+    "recentPlays": "Recent plays",
+    "rankBy": "Rank by",
+    "metric": {
+      "wins": "Wins",
+      "winRate": "Win rate",
+      "avgPosition": "Avg. position",
+      "avgScore": "Avg. score",
+      "podiums": "Podiums"
+    },
+    "positionNote": "Uses logged placements; when a play has none, players are ranked by score.",
+    "player": {
+      "plays": "Plays",
+      "bestScore": "Best score",
+      "longestStreak": "Longest win streak",
+      "topFaction": "Most played faction",
+      "topFactionValue": "{name} ({count, plural, one {# play} other {# plays}})"
+    },
+    "records": {
+      "title": "Records",
+      "highScore": "High score",
+      "lowScore": "Best score (lowest wins)",
+      "avgWinningScore": "Avg. winning score",
+      "closestWin": "Closest win",
+      "margin": "{count, plural, one {by # point} other {by # points}}",
+      "avgTableSize": "Avg. players per game",
+      "byOn": "{name} · {date}"
+    },
+    "avgScoreShort": "avg. {score}"
   },
   "library": {
     "title": "Your library",

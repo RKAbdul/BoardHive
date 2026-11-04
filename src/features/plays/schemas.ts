@@ -5,6 +5,10 @@ export type PlayMode = (typeof PLAY_MODES)[number]
 
 export const participantSchema = z
   .object({
+    // The existing play_participants row this maps to, when editing — lets
+    // an edit update rows in place instead of deleting and re-inserting
+    // every participant. Always null when logging a new play.
+    id: z.string().nullable().optional(),
     userId: z.string().nullable(),
     guestName: z.string().trim().nullable(),
     isWinner: z.boolean(),

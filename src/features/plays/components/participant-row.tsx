@@ -8,6 +8,8 @@ import { Star, X } from "lucide-react"
 
 export type Participant = {
   key: string
+  // The stored play_participants row, when editing an existing play.
+  id: string | null
   userId: string | null
   guestName: string | null
   displayName: string

@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server"
 import { getGroupLibraryGames } from "@/features/plays/data"
 import { getHiveMembers } from "@/features/hives/data"
-import { NewPlayForm } from "@/features/plays/components/new-play-form"
+import { PlayForm } from "@/features/plays/components/play-form"
 
 export default async function NewPlayPage({
   params,
@@ -28,7 +28,7 @@ export default async function NewPlayPage({
         {t("title")}
       </h1>
       <div className="mt-5">
-        <NewPlayForm groupId={groupId} members={memberList} libraryGames={libraryGames} />
+        <PlayForm groupId={groupId} members={memberList} libraryGames={libraryGames} />
       </div>
     </div>
   )

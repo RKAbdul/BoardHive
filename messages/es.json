@@ -197,6 +197,13 @@
           "generic": "No se pudo subir esa foto. Inténtalo de nuevo."
         }
       }
+    },
+    "edit": {
+      "title": "Editar partida",
+      "submit": "Guardar cambios",
+      "submitting": "Guardando…",
+      "forbidden": "Solo quien registró esta partida o el propietario del hive pueden modificarla.",
+      "formerMemberNote": "Algunos jugadores ya no están en el hive — se mantienen en esta partida tal como estaban."
     }
   },
   "stats": {
@@ -213,11 +220,37 @@
     "totalPlays": "{count, plural, one {# partida en este hive} other {# partidas en este hive}}",
     "empty": "Aún no hay partidas de este juego registradas en este hive.",
     "standings": "Clasificación",
-    "racingStandings": "Clasificación de carreras",
     "factionStandings": "Tasa de victorias por facción",
     "podiums": "{count, plural, one {# podio} other {# podios}}",
     "plays": "{count, plural, one {# partida} other {# partidas}}",
-    "recentPlays": "Últimas partidas"
+    "recentPlays": "Últimas partidas",
+    "rankBy": "Ordenar por",
+    "metric": {
+      "wins": "Victorias",
+      "winRate": "% de victorias",
+      "avgPosition": "Posición media",
+      "avgScore": "Puntuación media",
+      "podiums": "Podios"
+    },
+    "positionNote": "Usa las posiciones registradas; si una partida no tiene, se ordena por puntuación.",
+    "player": {
+      "plays": "Partidas",
+      "bestScore": "Mejor puntuación",
+      "longestStreak": "Racha de victorias más larga",
+      "topFaction": "Facción más jugada",
+      "topFactionValue": "{name} ({count, plural, one {# partida} other {# partidas}})"
+    },
+    "records": {
+      "title": "Récords",
+      "highScore": "Puntuación más alta",
+      "lowScore": "Mejor puntuación (gana la más baja)",
+      "avgWinningScore": "Puntuación media ganadora",
+      "closestWin": "Victoria más ajustada",
+      "margin": "{count, plural, one {por # punto} other {por # puntos}}",
+      "avgTableSize": "Jugadores por partida (media)",
+      "byOn": "{name} · {date}"
+    },
+    "avgScoreShort": "media {score}"
   },
   "library": {
     "title": "Tu colección",

@@ -3,12 +3,15 @@ import Image from "next/image"
 import { getFormatter, getTranslations } from "next-intl/server"
 import { getPlayById, getPlayPhotoUrls } from "@/features/plays/data"
 import { verifySession } from "@/lib/dal"
+import { getMyRole } from "@/features/hives/data"
+import { canManagePlay } from "@/features/plays/permissions"
+import { LinkButton } from "@/components/ui/link-button"
 import { Link } from "@/i18n/navigation"
 import { CommentsSection } from "@/features/plays/components/comments-section"
 import { DeletePlayButton } from "@/features/plays/components/delete-play-button"
 import { PhotoCarousel, type Photo } from "@/features/plays/components/photo-carousel"
 import { PhotoUploader } from "@/features/plays/components/photo-uploader"
-import { Dices, Flag, Shuffle, Star, Trophy } from "lucide-react"
+import { Dices, Flag, Pencil, Shuffle, Star, Trophy } from "lucide-react"
 
 const PODIUM_TOKEN: Record<number, string> = {
   1: "text-token-2",
@@ -31,7 +34,11 @@ export default async function PlayDetailPage({
   const t = await getTranslations("plays.detail")
   const tMode = await getTranslations("plays.new.mode")
 
-  const photoUrls = await getPlayPhotoUrls(play.photos.map((p) => p.storage_path))
+  const [photoUrls, role] = await Promise.all([
+    getPlayPhotoUrls(play.photos.map((p) => p.storage_path)),
+    session ? getMyRole(groupId, session.userId) : null,
+  ])
+  const canManage = canManagePlay(play, session?.userId, role)
   const photos: Photo[] = play.photos
     .map((p) => ({
       id: p.id,
@@ -180,8 +187,12 @@ export default async function PlayDetailPage({
         </div>
       </div>
 
-      {session?.userId === play.logged_by && (
-        <div className="flex justify-end">
+      {canManage && (
+        <div className="flex items-center justify-end gap-2">
+          <LinkButton href={`/hives/${groupId}/plays/${playId}/edit`} variant="outline" size="sm">
+            <Pencil aria-hidden="true" />
+            {t("editPlay")}
+          </LinkButton>
           <DeletePlayButton groupId={groupId} playId={playId} />
         </div>
       )}
