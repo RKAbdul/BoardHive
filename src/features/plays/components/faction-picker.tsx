@@ -29,9 +29,18 @@ export function FactionPicker({
   const t = useTranslations("plays.new")
   const isCreatingNew = value.newFactionName !== null
 
+  // Base UI's Select.Value renders the raw value — here a faction UUID —
+  // unless it's given a value→label map. The explicit lookup in SelectValue
+  // below also covers the moment on the edit page where a saved faction is
+  // already selected but this game's faction list hasn't loaded yet: show
+  // nothing rather than flash the id.
+  const labels: Record<string, string> = { [NEW_FACTION_VALUE]: t("newFaction") }
+  for (const f of factions) labels[f.id] = f.name
+
   return (
     <div className="flex flex-col gap-1.5">
       <Select
+        items={labels}
         value={isCreatingNew ? NEW_FACTION_VALUE : value.factionId}
         onValueChange={(v) => {
           if (v === NEW_FACTION_VALUE) {
@@ -42,7 +51,15 @@ export function FactionPicker({
         }}
       >
         <SelectTrigger className="w-full">
-          <SelectValue placeholder={t("factionPlaceholder")} />
+          <SelectValue>
+            {(selected: string | null) =>
+              selected === null ? (
+                <span className="text-muted-foreground">{t("factionPlaceholder")}</span>
+              ) : (
+                (labels[selected] ?? "…")
+              )
+            }
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {factions.map((f) => (
